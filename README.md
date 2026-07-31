@@ -26,7 +26,7 @@ bracket — and fills it with water as the rain falls. Works with any precipitat
 - **Auto graduations**: tick marks and labels adapt to the scale you choose (`max_level` = daily maximum).
 - Semi-transparent bracket so graduations stay readable — or hide it with `show_bracket: false`.
 - **No daily total sensor? One click fixes it**: if the selected sensor isn't a daily cumulative, the editor offers a button that creates the needed helpers for you (a daily utility meter — plus an integration sensor first when your source is a rate in mm/h).
-- **Collapsible 24 h history**: enable `show_history` and the card gets a discreet button that expands a 24 h chart of hourly (or half-hourly) rain bars, drawn with the water color from the HA history API. The y-scale auto-fits the biggest bar (minimum 5).
+- **Collapsible 24 h history**: enable `show_history` and the card gets a discreet button that expands a 24 h chart of hourly (or half-hourly) rain bars, drawn with the water color from the HA history API. The y-scale is a multiple of 5: minimum 5, rounded up to the next 5 above the biggest bar.
 - **Battery and connectivity** in the card corners: pick a battery entity (icon with colored level, percentage, or both) and a connectivity entity (wifi icon, red and crossed when offline).
 - **Overflow easter egg**: when the daily total exceeds `max_level`, the funnel fills up, drops fly out and splash on the card title and into a cartoon puddle spreading below the gauge.
 - **Gauge color**: clear, bottle green, amber or smoked glass (`glass_color`) — or any custom color in YAML.

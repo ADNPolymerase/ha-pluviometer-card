@@ -1,4 +1,4 @@
-const CARD_VERSION = "0.3.0";
+const CARD_VERSION = "0.3.1";
 
 console.info(
   "%c PLUVIOMETER-CARD %c v" + CARD_VERSION + " ",
@@ -446,12 +446,11 @@ class PluviometerCard extends HTMLElement {
       }
     }
     const vmax0 = Math.max(...bars, 0);
-    const step = pvNiceStep(vmax0 > 0 ? vmax0 : 1);
-    const vmax = Math.max(Math.ceil((vmax0 * 1.05) / step) * step, step, 5);
+    const vmax = Math.max(5, Math.ceil(vmax0 / 5) * 5);
     const y = (v) => T + (1 - v / vmax) * (H - T - B);
     const slot = (W - L - R) / N;
     const bw = slot * 0.72;
-    const fmtV = (v) => (vmax >= 10 ? Math.round(v) : Math.round(v * 10) / 10);
+    const fmtV = (v) => (v % 1 === 0 ? v : v.toFixed(1));
     const unit = this._config.unit ||
       (this._hass.states[this._config.entity] && this._hass.states[this._config.entity].attributes.unit_of_measurement) || "mm";
     const fmtH = (t) => {

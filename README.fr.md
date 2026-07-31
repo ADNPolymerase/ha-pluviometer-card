@@ -18,7 +18,7 @@ capteur de précipitations (Netatmo, intégrations météo, DIY…), en mm ou en
 - **Graduations automatiques** : ticks et labels s'adaptent à l'échelle choisie (`max_level` = maximum par jour).
 - Collier semi-transparent pour laisser les graduations lisibles — ou masquable avec `show_bracket: false`.
 - **Pas de capteur de cumul journalier ? Un clic suffit** : si le capteur choisi n'est pas un cumul, l'éditeur propose un bouton qui crée les helpers nécessaires (compteur `utility_meter` à cycle journalier — précédé d'un capteur `integration` si la source est une intensité en mm/h).
-- **Tracé 24 h dépliable** : avec `show_history`, la card gagne un bouton discret qui déroule un graphique en barres par heure (ou demi-heure) des dernières 24 h, dans la couleur de l'eau, via l'API history de HA. L'échelle s'ajuste à la plus grosse barre (minimum 5).
+- **Tracé 24 h dépliable** : avec `show_history`, la card gagne un bouton discret qui déroule un graphique en barres par heure (ou demi-heure) des dernières 24 h, dans la couleur de l'eau, via l'API history de HA. L'échelle est un multiple de 5 : minimum 5, arrondie au 5 supérieur de la plus grosse barre.
 - **Batterie et connectivité** dans les coins de la card : entité batterie (icône à niveau coloré, pourcentage, ou les deux) et entité connectivité (icône wifi, barrée en rouge si déconnecté).
 - **Easter egg débordement** : quand le cumul du jour dépasse `max_level`, l'entonnoir se remplit, des gouttes s'envolent et s'écrasent sur le titre de la card et dans une flaque cartoon qui s'étale sous le pluviomètre.
 - **Couleur du pluviomètre** : transparent, vert bouteille, ambré ou fumé (`glass_color`) — ou toute couleur libre en YAML.
