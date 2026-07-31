@@ -1,4 +1,4 @@
-const CARD_VERSION = "0.2.0";
+const CARD_VERSION = "0.3.0";
 
 console.info(
   "%c PLUVIOMETER-CARD %c v" + CARD_VERSION + " ",
@@ -18,7 +18,9 @@ const PV_T = {
     hist: "Last 24 h", noData: "No data", histOpt: "Show the 24 h history button",
     bucketOpt: "24 h chart bars", bucketHour: "Per hour", bucketHalf: "Per half-hour",
     glassOpt: "Gauge color", glassClear: "Clear", glassGreen: "Bottle green", glassAmber: "Amber", glassSmoked: "Smoked",
-    secName: "Secondary entity display name" },
+    secName: "Secondary entity display name",
+    battOpt: "Battery entity", battDisp: "Battery display", battIcon: "Icon", battPct: "Percentage", battBoth: "Both",
+    connOpt: "Connectivity entity" },
   fr: { entity: "Capteur de pluie", name: "Nom", label: "Sous-titre", max: "Maximum de précipitations par jour (jauge pleine)", decimals: "Décimales",
     color: "Couleur de l'eau (hex)", secondary: "Entité secondaire (ex. intensité)", language: "Langue", auto: "Auto",
     unavailable: "Indisponible", bracket: "Afficher le collier de fixation",
@@ -28,7 +30,9 @@ const PV_T = {
     hist: "Dernières 24 h", noData: "Aucune donnée", histOpt: "Afficher le bouton tracé 24 h",
     bucketOpt: "Barres du tracé 24 h", bucketHour: "Par heure", bucketHalf: "Par demi-heure",
     glassOpt: "Couleur du pluviomètre", glassClear: "Transparent", glassGreen: "Vert bouteille", glassAmber: "Ambré", glassSmoked: "Fumé",
-    secName: "Nom affiché de l'entité secondaire" },
+    secName: "Nom affiché de l'entité secondaire",
+    battOpt: "Entité batterie", battDisp: "Affichage batterie", battIcon: "Icône", battPct: "Pourcentage", battBoth: "Les deux",
+    connOpt: "Entité connectivité" },
   de: { entity: "Regensensor", name: "Name", label: "Untertitel", max: "Tagesmaximum Niederschlag (volle Skala)", decimals: "Dezimalstellen",
     color: "Wasserfarbe (Hex)", secondary: "Sekundäre Entität (z. B. Regenrate)", language: "Sprache", auto: "Auto",
     unavailable: "Nicht verfügbar", bracket: "Halterung anzeigen",
@@ -38,7 +42,9 @@ const PV_T = {
     hist: "Letzte 24 h", noData: "Keine Daten", histOpt: "24-h-Verlauf-Button anzeigen",
     bucketOpt: "Balken 24-h-Diagramm", bucketHour: "Pro Stunde", bucketHalf: "Pro halbe Stunde",
     glassOpt: "Farbe des Regenmessers", glassClear: "Transparent", glassGreen: "Flaschengrün", glassAmber: "Bernstein", glassSmoked: "Rauchglas",
-    secName: "Anzeigename der sekundären Entität" },
+    secName: "Anzeigename der sekundären Entität",
+    battOpt: "Batterie-Entität", battDisp: "Batterieanzeige", battIcon: "Symbol", battPct: "Prozent", battBoth: "Beides",
+    connOpt: "Konnektivitäts-Entität" },
   es: { entity: "Sensor de lluvia", name: "Nombre", label: "Subtítulo", max: "Máximo diario de precipitación (escala completa)", decimals: "Decimales",
     color: "Color del agua (hex)", secondary: "Entidad secundaria (p. ej. intensidad)", language: "Idioma", auto: "Auto",
     unavailable: "No disponible", bracket: "Mostrar el soporte",
@@ -48,7 +54,9 @@ const PV_T = {
     hist: "Últimas 24 h", noData: "Sin datos", histOpt: "Mostrar el botón de historial 24 h",
     bucketOpt: "Barras del gráfico 24 h", bucketHour: "Por hora", bucketHalf: "Por media hora",
     glassOpt: "Color del pluviómetro", glassClear: "Transparente", glassGreen: "Verde botella", glassAmber: "Ámbar", glassSmoked: "Ahumado",
-    secName: "Nombre mostrado de la entidad secundaria" },
+    secName: "Nombre mostrado de la entidad secundaria",
+    battOpt: "Entidad de batería", battDisp: "Visualización de batería", battIcon: "Icono", battPct: "Porcentaje", battBoth: "Ambos",
+    connOpt: "Entidad de conectividad" },
   it: { entity: "Sensore pioggia", name: "Nome", label: "Sottotitolo", max: "Massimo giornaliero di pioggia (scala piena)", decimals: "Decimali",
     color: "Colore dell'acqua (hex)", secondary: "Entità secondaria (es. intensità)", language: "Lingua", auto: "Auto",
     unavailable: "Non disponibile", bracket: "Mostra la staffa",
@@ -58,7 +66,9 @@ const PV_T = {
     hist: "Ultime 24 h", noData: "Nessun dato", histOpt: "Mostra il pulsante storico 24 h",
     bucketOpt: "Barre del grafico 24 h", bucketHour: "Ogni ora", bucketHalf: "Ogni mezz'ora",
     glassOpt: "Colore del pluviometro", glassClear: "Trasparente", glassGreen: "Verde bottiglia", glassAmber: "Ambra", glassSmoked: "Fumé",
-    secName: "Nome visualizzato dell'entità secondaria" },
+    secName: "Nome visualizzato dell'entità secondaria",
+    battOpt: "Entità batteria", battDisp: "Visualizzazione batteria", battIcon: "Icona", battPct: "Percentuale", battBoth: "Entrambi",
+    connOpt: "Entità connettività" },
   nl: { entity: "Regensensor", name: "Naam", label: "Ondertitel", max: "Dagelijks neerslagmaximum (volle schaal)", decimals: "Decimalen",
     color: "Waterkleur (hex)", secondary: "Secundaire entiteit (bijv. regenintensiteit)", language: "Taal", auto: "Auto",
     unavailable: "Niet beschikbaar", bracket: "Beugel tonen",
@@ -68,7 +78,9 @@ const PV_T = {
     hist: "Afgelopen 24 u", noData: "Geen gegevens", histOpt: "Toon de 24 u-geschiedenisknop",
     bucketOpt: "Balken 24 u-grafiek", bucketHour: "Per uur", bucketHalf: "Per half uur",
     glassOpt: "Kleur van de regenmeter", glassClear: "Transparant", glassGreen: "Flesgroen", glassAmber: "Amber", glassSmoked: "Rookglas",
-    secName: "Weergavenaam secundaire entiteit" },
+    secName: "Weergavenaam secundaire entiteit",
+    battOpt: "Batterij-entiteit", battDisp: "Batterijweergave", battIcon: "Pictogram", battPct: "Percentage", battBoth: "Beide",
+    connOpt: "Connectiviteits-entiteit" },
 };
 
 function pvSlugify(s) {
@@ -113,6 +125,8 @@ function pvGlassColors(v) {
   if (!v || PV_GLASS[v]) return PV_GLASS[v || "clear"];
   return { fill: pvAlpha(v, 0.24), stroke: v };
 }
+
+const PV_DROP = "M0 -7 C2.8 -3 5 0.5 5 3.2 A5 5 0 1 1 -5 3.2 C-5 0.5 -2.8 -3 0 -7 Z";
 
 const PV_SCALE_TOP = 95;
 const PV_SCALE_BOTTOM = 252;
@@ -176,8 +190,8 @@ class PluviometerCard extends HTMLElement {
     card.innerHTML = `
       <style>
         .pv-wrap { display: flex; align-items: center; gap: 4px; padding: 12px 16px; cursor: pointer; }
-        .pv-gauge { flex: none; width: 118px; }
-        .pv-gauge svg { display: block; width: 100%; height: auto; }
+        .pv-gauge { flex: none; width: 118px; position: relative; z-index: 1; }
+        .pv-gauge svg { display: block; width: 100%; height: auto; overflow: visible; }
         .pv-info { flex: 1; min-width: 0; padding-left: 4px; }
         .pv-name { font-size: 1em; font-weight: 500; color: var(--primary-text-color);
           overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -204,7 +218,114 @@ class PluviometerCard extends HTMLElement {
         .pv-hist-status { text-align: center; color: var(--secondary-text-color); font-size: 0.85em; padding: 10px 0; }
         .pv-hist-grid { stroke: var(--divider-color, #e0e0e0); stroke-width: 1; }
         .pv-hist-axis { font-size: 10px; fill: var(--secondary-text-color); }
+        ha-card { position: relative; }
+        .pv-corner { position: absolute; top: 10px; display: flex; align-items: center; gap: 5px;
+          font-size: 0.9em; color: var(--secondary-text-color); z-index: 2; }
+        .pv-corner[hidden] { display: none !important; }
+        .pv-batt { right: 12px; }
+        .pv-conn { left: 12px; }
+        .pv-conn.pv-off { color: var(--error-color, #db4437); }
+        .pv-drip { opacity: 0; }
+        .pv-drip-r1 { animation: pv-drip-r1 2.9s linear infinite; }
+        .pv-drip-r2 { animation: pv-drip-r2 3.7s linear infinite; animation-delay: 1.3s; }
+        .pv-drip-r3 { animation: pv-drip-r3 3.2s linear infinite; animation-delay: 2.4s; }
+        .pv-drip-r4 { animation: pv-drip-r4 3.9s linear infinite; animation-delay: 0.9s; }
+        .pv-drip-r5 { animation: pv-drip-r5 4.4s linear infinite; animation-delay: 3.1s; }
+        .pv-drip-r6 { animation: pv-drip-r6 3.0s linear infinite; animation-delay: 1.8s; }
+        .pv-drip-r7 { animation: pv-drip-r7 3.5s linear infinite; animation-delay: 2.9s; }
+        .pv-drip-r8 { animation: pv-drip-r8 4.1s linear infinite; animation-delay: 0.4s; }
+        @keyframes pv-drip-r1 {
+          0% { transform: translate(0, 0) rotate(-58deg) scale(1); opacity: 0; }
+          7% { opacity: 0.85; }
+          45% { transform: translate(36px, 20px) rotate(-45deg) scale(1); opacity: 0.85; }
+          74% { transform: translate(60px, 69px) rotate(-15deg) scale(1); opacity: 0.85; }
+          80% { transform: translate(60px, 69px) rotate(0deg) scale(1.7, 0.4); opacity: 0.75; }
+          100% { transform: translate(60px, 69px) rotate(0deg) scale(2.4, 0.12); opacity: 0; }
+        }
+        @keyframes pv-drip-r2 {
+          0% { transform: translate(0, 0) rotate(-58deg) scale(1); opacity: 0; }
+          7% { opacity: 0.8; }
+          45% { transform: translate(70px, 40px) rotate(-45deg) scale(1); opacity: 0.8; }
+          74% { transform: translate(122px, 88px) rotate(-15deg) scale(1); opacity: 0.8; }
+          80% { transform: translate(122px, 88px) rotate(0deg) scale(1.7, 0.4); opacity: 0.7; }
+          100% { transform: translate(122px, 88px) rotate(0deg) scale(2.4, 0.12); opacity: 0; }
+        }
+        @keyframes pv-drip-r3 {
+          0% { transform: translate(0, 0) rotate(-58deg) scale(1); opacity: 0; }
+          7% { opacity: 0.8; }
+          45% { transform: translate(78px, 42px) rotate(-45deg) scale(1); opacity: 0.8; }
+          74% { transform: translate(133px, 78px) rotate(-15deg) scale(1); opacity: 0.8; }
+          80% { transform: translate(133px, 78px) rotate(0deg) scale(1.7, 0.4); opacity: 0.7; }
+          100% { transform: translate(133px, 78px) rotate(0deg) scale(2.4, 0.12); opacity: 0; }
+        }
+        @keyframes pv-drip-r4 {
+          0% { transform: translate(0, 0) rotate(-58deg) scale(1); opacity: 0; }
+          7% { opacity: 0.8; }
+          45% { transform: translate(40px, 22px) rotate(-45deg) scale(1); opacity: 0.8; }
+          75% { transform: translate(70px, 140px) rotate(-12deg) scale(1); opacity: 0.8; }
+          92% { transform: translate(90px, 259px) rotate(0deg) scale(1); opacity: 0.8; }
+          96% { transform: translate(90px, 259px) rotate(0deg) scale(1.6, 0.35); opacity: 0.7; }
+          100% { transform: translate(90px, 259px) rotate(0deg) scale(2, 0.18); opacity: 0; }
+        }
+        @keyframes pv-drip-r5 {
+          0% { transform: translate(0, 0) rotate(-62deg) scale(1); opacity: 0; }
+          7% { opacity: 0.8; }
+          45% { transform: translate(120px, 45px) rotate(-45deg) scale(1); opacity: 0.8; }
+          75% { transform: translate(210px, 190px) rotate(-12deg) scale(1); opacity: 0.8; }
+          92% { transform: translate(258px, 357px) rotate(0deg) scale(1); opacity: 0.8; }
+          96% { transform: translate(258px, 357px) rotate(0deg) scale(1.6, 0.35); opacity: 0.7; }
+          100% { transform: translate(258px, 357px) rotate(0deg) scale(2, 0.18); opacity: 0; }
+        }
+        @keyframes pv-drip-r6 {
+          0% { transform: translate(0, 0) rotate(-58deg) scale(1); opacity: 0; }
+          7% { opacity: 0.8; }
+          45% { transform: translate(85px, 38px) rotate(-45deg) scale(1); opacity: 0.8; }
+          74% { transform: translate(167px, 87px) rotate(-15deg) scale(1); opacity: 0.8; }
+          80% { transform: translate(167px, 87px) rotate(0deg) scale(1.7, 0.4); opacity: 0.7; }
+          100% { transform: translate(167px, 87px) rotate(0deg) scale(2.4, 0.12); opacity: 0; }
+        }
+        @keyframes pv-drip-r7 {
+          0% { transform: translate(0, 0) rotate(-52deg) scale(1); opacity: 0; }
+          7% { opacity: 0.8; }
+          45% { transform: translate(30px, 20px) rotate(-40deg) scale(1); opacity: 0.8; }
+          75% { transform: translate(28px, 150px) rotate(-8deg) scale(1); opacity: 0.8; }
+          92% { transform: translate(23px, 247px) rotate(0deg) scale(1); opacity: 0.8; }
+          96% { transform: translate(23px, 247px) rotate(0deg) scale(1.6, 0.35); opacity: 0.7; }
+          100% { transform: translate(23px, 247px) rotate(0deg) scale(2, 0.18); opacity: 0; }
+        }
+        @keyframes pv-drip-r8 {
+          0% { transform: translate(0, 0) rotate(-60deg) scale(1); opacity: 0; }
+          7% { opacity: 0.8; }
+          45% { transform: translate(75px, 40px) rotate(-45deg) scale(1); opacity: 0.8; }
+          75% { transform: translate(110px, 220px) rotate(-10deg) scale(1); opacity: 0.8; }
+          92% { transform: translate(127px, 337px) rotate(0deg) scale(1); opacity: 0.8; }
+          96% { transform: translate(127px, 337px) rotate(0deg) scale(1.6, 0.35); opacity: 0.7; }
+          100% { transform: translate(127px, 337px) rotate(0deg) scale(2, 0.18); opacity: 0; }
+        }
+        .pv-puddle { transform-origin: 180px 259px; animation: pv-puddle 2.8s ease-in-out infinite alternate; }
+        @keyframes pv-puddle {
+          0% { transform: scale(1, 1); }
+          100% { transform: scale(1.02, 1.1); }
+        }
+
       </style>
+      <div class="pv-corner pv-conn" id="pv-conn" hidden>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <path d="M3.5 9.5 A 12 12 0 0 1 20.5 9.5"/>
+          <path d="M6.5 12.7 A 8 8 0 0 1 17.5 12.7"/>
+          <path d="M9.4 15.8 A 4.2 4.2 0 0 1 14.6 15.8"/>
+          <circle cx="12" cy="18.6" r="1.5" fill="currentColor" stroke="none"/>
+          <line id="pv-conn-off" x1="4" y1="3.5" x2="20.5" y2="20" style="display:none;"/>
+        </svg>
+      </div>
+      <div class="pv-corner pv-batt" id="pv-batt" hidden>
+        <svg width="28" height="16" viewBox="0 0 24 14" id="pv-batt-icon">
+          <rect x="1" y="2" width="19" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <rect x="21" y="5" width="2.4" height="4" rx="1" fill="currentColor"/>
+          <rect id="pv-batt-fill" x="3" y="4" width="15" height="6" rx="1" fill="currentColor"/>
+        </svg>
+        <span id="pv-batt-pct"></span>
+      </div>
       <div class="pv-wrap" id="pv-wrap">
         <div class="pv-gauge">
         <svg viewBox="0 0 160 272" xmlns="http://www.w3.org/2000/svg" role="img">
@@ -218,6 +339,27 @@ class PluviometerCard extends HTMLElement {
               <rect id="pv-water-rect" x="55" y="${PV_SCALE_TOP}" width="40" height="${PV_SCALE_BOTTOM - PV_SCALE_TOP + 12}" fill="${c.water_color}" opacity="0.78"/>
               <ellipse id="pv-water-top" cx="75" cy="${PV_SCALE_TOP}" rx="14" ry="2.6" fill="${c.water_color}" opacity="0.95"/>
             </g>
+          </g>
+          <g id="pv-overflow" style="display:none;">
+            <path d="M39 20 Q43 60 60 79 L90 79 Q107 60 111 20 Z" fill="${c.water_color}" opacity="0.7"/>
+            <path d="M60 78 L90 78 L89.2 97 L60.8 97 Z" fill="${c.water_color}" opacity="0.78"/>
+            <ellipse cx="75" cy="20" rx="36" ry="6" fill="${c.water_color}" opacity="0.85"/>
+            <g class="pv-puddle">
+              <path d="M16 260 C6 255 18 249 34 251 C42 246 62 246 70 250 C80 245 102 246 110 251 C130 246 155 248 165 253 C185 247 215 248 228 253 C250 248 285 249 297 255 C318 251 345 255 340 261 C350 265 330 269 310 267 C290 271 255 271 240 267 C220 271 185 271 170 266 C150 270 120 271 105 267 C88 271 60 270 48 265 C30 268 8 266 16 260 Z" fill="${c.water_color}" stroke="rgba(0,0,0,0.4)" stroke-width="2" opacity="0.9"/>
+              <path d="M40 255 C60 250 90 250 100 254 C90 257 60 257 40 255 Z" fill="#ffffff" opacity="0.28"/>
+              <path d="M150 256 C180 251 220 252 235 256 C215 259 170 259 150 256 Z" fill="#ffffff" opacity="0.25"/>
+              <path d="M270 258 C290 254 315 255 325 259 C310 261 285 261 270 258 Z" fill="#ffffff" opacity="0.22"/>
+            </g>
+
+            <g transform="translate(121 15)"><path class="pv-drip pv-drip-r1" d="${PV_DROP}" fill="${c.water_color}"/></g>
+            <g transform="translate(117 21) scale(0.72)"><path class="pv-drip pv-drip-r2" d="${PV_DROP}" fill="${c.water_color}"/></g>
+            <g transform="translate(119 18) scale(0.85)"><path class="pv-drip pv-drip-r3" d="${PV_DROP}" fill="${c.water_color}"/></g>
+            <g transform="translate(119 17) scale(0.9)"><path class="pv-drip pv-drip-r4" d="${PV_DROP}" fill="${c.water_color}"/></g>
+            <g transform="translate(122 20) scale(0.65)"><path class="pv-drip pv-drip-r5" d="${PV_DROP}" fill="${c.water_color}"/></g>
+            <g transform="translate(120 16) scale(0.78)"><path class="pv-drip pv-drip-r6" d="${PV_DROP}" fill="${c.water_color}"/></g>
+            <g transform="translate(118 17) scale(0.95)"><path class="pv-drip pv-drip-r7" d="${PV_DROP}" fill="${c.water_color}"/></g>
+            <g transform="translate(121 19) scale(0.7)"><path class="pv-drip pv-drip-r8" d="${PV_DROP}" fill="${c.water_color}"/></g>
+
           </g>
           <path class="pv-glass" d="M31 16 Q36 62 57 80 L58 84 L92 84 L93 80 Q114 62 119 16"/>
           <ellipse class="pv-glass" cx="75" cy="15" rx="44" ry="8.5"/>
@@ -247,7 +389,7 @@ class PluviometerCard extends HTMLElement {
     `;
     this.appendChild(card);
     this._el = {};
-    for (const id of ["pv-wrap", "pv-water", "pv-water-rect", "pv-water-top", "pv-name", "pv-value", "pv-unit", "pv-label", "pv-secondary", "pv-hist-toggle", "pv-hist", "pv-hist-label", "pv-hist-body"]) {
+    for (const id of ["pv-wrap", "pv-water", "pv-water-rect", "pv-water-top", "pv-name", "pv-value", "pv-unit", "pv-label", "pv-secondary", "pv-hist-toggle", "pv-hist", "pv-hist-label", "pv-hist-body", "pv-conn", "pv-conn-off", "pv-batt", "pv-batt-fill", "pv-batt-pct", "pv-overflow"]) {
       this._el[id] = card.querySelector("#" + id);
     }
     this._el["pv-wrap"].addEventListener("click", () => {
@@ -305,7 +447,7 @@ class PluviometerCard extends HTMLElement {
     }
     const vmax0 = Math.max(...bars, 0);
     const step = pvNiceStep(vmax0 > 0 ? vmax0 : 1);
-    const vmax = Math.max(Math.ceil((vmax0 * 1.05) / step) * step, step);
+    const vmax = Math.max(Math.ceil((vmax0 * 1.05) / step) * step, step, 5);
     const y = (v) => T + (1 - v / vmax) * (H - T - B);
     const slot = (W - L - R) / N;
     const bw = slot * 0.72;
@@ -368,6 +510,8 @@ class PluviometerCard extends HTMLElement {
       this._el["pv-unit"].textContent = "";
       if (!c.label) this._el["pv-label"].textContent = t.unavailable;
       this._setLevel(0);
+      this._el["pv-overflow"].style.display = "none";
+      this._updateCorners();
       return;
     }
     wrap.classList.remove("pv-unavailable");
@@ -377,6 +521,8 @@ class PluviometerCard extends HTMLElement {
     this._el["pv-value"].textContent = pvFmt(value, c.decimals);
     this._el["pv-unit"].textContent = " " + unit;
     this._setLevel(Math.max(0, Math.min(1, value / c.max_level)));
+    this._el["pv-overflow"].style.display = value > c.max_level ? "" : "none";
+    this._updateCorners();
 
     const sec = this._el["pv-secondary"];
     if (c.secondary_entity && this._hass.states[c.secondary_entity]) {
@@ -388,6 +534,41 @@ class PluviometerCard extends HTMLElement {
         (isNaN(n2) ? s2.state : pvFmt(n2, c.decimals)) + (u2 ? " " + u2 : "");
     } else {
       sec.hidden = true;
+    }
+  }
+
+  _updateCorners() {
+    const c = this._config;
+    const conn = this._el["pv-conn"];
+    const cst = c.connectivity_entity && this._hass.states[c.connectivity_entity];
+    if (cst) {
+      conn.hidden = false;
+      const stt = String(cst.state).toLowerCase();
+      const ok = !["off", "unavailable", "unknown", "disconnected", "not_home", "none"].includes(stt);
+      conn.classList.toggle("pv-off", !ok);
+      this._el["pv-conn-off"].style.display = ok ? "none" : "";
+      conn.title = (cst.attributes.friendly_name || c.connectivity_entity) + " : " + cst.state;
+    } else {
+      conn.hidden = true;
+    }
+    const batt = this._el["pv-batt"];
+    const bst = c.battery_entity && this._hass.states[c.battery_entity];
+    const lvl = bst ? parseFloat(bst.state) : NaN;
+    if (bst && !isNaN(lvl)) {
+      batt.hidden = false;
+      const mode = c.battery_display || "both";
+      batt.querySelector("svg").style.display = mode === "percent" ? "none" : "";
+      const pct = this._el["pv-batt-pct"];
+      pct.style.display = mode === "icon" ? "none" : "";
+      pct.textContent = Math.round(lvl) + "%";
+      const fill = this._el["pv-batt-fill"];
+      const w = Math.max(0.8, 15 * Math.max(0, Math.min(100, lvl)) / 100);
+      fill.setAttribute("width", w.toFixed(1));
+      fill.setAttribute("fill", lvl <= 15 ? "var(--error-color, #db4437)" :
+        lvl <= 40 ? "var(--warning-color, #f0a025)" : "var(--success-color, #43a047)");
+      batt.title = (bst.attributes.friendly_name || c.battery_entity) + " : " + Math.round(lvl) + "%";
+    } else {
+      batt.hidden = true;
     }
   }
 
@@ -427,6 +608,9 @@ class PluviometerCardEditor extends HTMLElement {
         if (v.history_bucket && v.history_bucket !== "hour") out.history_bucket = v.history_bucket;
         if (v.glass_color && v.glass_color !== "clear") out.glass_color = v.glass_color;
         if (v.secondary_name) out.secondary_name = v.secondary_name;
+        if (v.battery_entity) out.battery_entity = v.battery_entity;
+        if (v.battery_display && v.battery_display !== "both") out.battery_display = v.battery_display;
+        if (v.connectivity_entity) out.connectivity_entity = v.connectivity_entity;
         if (v.secondary_entity) out.secondary_entity = v.secondary_entity;
         if (v.language) out.language = v.language;
         this._config = out;
@@ -450,6 +634,9 @@ class PluviometerCardEditor extends HTMLElement {
       glass_color: c.glass_color || "clear",
       secondary_entity: c.secondary_entity || "",
       secondary_name: c.secondary_name || "",
+      battery_entity: c.battery_entity || "",
+      battery_display: c.battery_display || "both",
+      connectivity_entity: c.connectivity_entity || "",
       language: c.language || "",
     };
     this._form.schema = [
@@ -473,6 +660,13 @@ class PluviometerCardEditor extends HTMLElement {
       ] } } },
       { name: "secondary_entity", label: t.secondary, selector: { entity: { domain: "sensor" } } },
       { name: "secondary_name", label: t.secName, selector: { text: {} } },
+      { name: "battery_entity", label: t.battOpt, selector: { entity: { domain: "sensor" } } },
+      { name: "battery_display", label: t.battDisp, selector: { select: { mode: "dropdown", options: [
+        { value: "both", label: t.battBoth },
+        { value: "icon", label: t.battIcon },
+        { value: "percent", label: t.battPct },
+      ] } } },
+      { name: "connectivity_entity", label: t.connOpt, selector: { entity: { domain: ["binary_sensor", "sensor"] } } },
       { name: "language", label: t.language, selector: { select: { mode: "dropdown", options: [{ value: "", label: t.auto }].concat(Object.keys(PV_LANGNAMES).map((l) => ({ value: l, label: PV_LANGNAMES[l] }))) } } },
     ];
     this._renderHelperBox(t);
