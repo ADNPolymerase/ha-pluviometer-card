@@ -1,0 +1,293 @@
+const CARD_VERSION = "0.1.0";
+
+console.info(
+  "%c PLUVIOMETER-CARD %c v" + CARD_VERSION + " ",
+  "color:white;background:#1c6ea4;font-weight:700;",
+  "color:#1c6ea4;background:white;font-weight:700;"
+);
+
+const PV_LANGNAMES = { en: "English", fr: "Français", de: "Deutsch", es: "Español", it: "Italiano", nl: "Nederlands" };
+
+const PV_T = {
+  en: { entity: "Rain sensor", name: "Name", label: "Subtitle", max: "Gauge scale (max value)", decimals: "Decimals",
+    color: "Water color (hex)", secondary: "Secondary entity (e.g. rain rate)", language: "Language", auto: "Auto",
+    unavailable: "Unavailable" },
+  fr: { entity: "Capteur de pluie", name: "Nom", label: "Sous-titre", max: "Échelle de la jauge (valeur max)", decimals: "Décimales",
+    color: "Couleur de l'eau (hex)", secondary: "Entité secondaire (ex. intensité)", language: "Langue", auto: "Auto",
+    unavailable: "Indisponible" },
+  de: { entity: "Regensensor", name: "Name", label: "Untertitel", max: "Skala (Maximalwert)", decimals: "Dezimalstellen",
+    color: "Wasserfarbe (Hex)", secondary: "Sekundäre Entität (z. B. Regenrate)", language: "Sprache", auto: "Auto",
+    unavailable: "Nicht verfügbar" },
+  es: { entity: "Sensor de lluvia", name: "Nombre", label: "Subtítulo", max: "Escala (valor máximo)", decimals: "Decimales",
+    color: "Color del agua (hex)", secondary: "Entidad secundaria (p. ej. intensidad)", language: "Idioma", auto: "Auto",
+    unavailable: "No disponible" },
+  it: { entity: "Sensore pioggia", name: "Nome", label: "Sottotitolo", max: "Scala (valore massimo)", decimals: "Decimali",
+    color: "Colore dell'acqua (hex)", secondary: "Entità secondaria (es. intensità)", language: "Lingua", auto: "Auto",
+    unavailable: "Non disponibile" },
+  nl: { entity: "Regensensor", name: "Naam", label: "Ondertitel", max: "Schaal (maximumwaarde)", decimals: "Decimalen",
+    color: "Waterkleur (hex)", secondary: "Secundaire entiteit (bijv. regenintensiteit)", language: "Taal", auto: "Auto",
+    unavailable: "Niet beschikbaar" },
+};
+
+function pvLangCode(hass, config) {
+  const l = (config && config.language) || (hass && (hass.locale ? hass.locale.language : hass.language)) || "en";
+  const s = String(l).substring(0, 2).toLowerCase();
+  return PV_T[s] ? s : "en";
+}
+function pvT(hass, config) { return PV_T[pvLangCode(hass, config)]; }
+
+function pvNiceStep(max) {
+  const target = max / 4;
+  const candidates = [0.25, 0.5, 1, 2, 2.5, 5, 10, 20, 25, 50, 100, 200, 500];
+  for (const c of candidates) if (c >= target) return c;
+  return Math.ceil(target);
+}
+
+function pvFmt(n, decimals) {
+  if (n == null || isNaN(n)) return "—";
+  return n.toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
+
+const PV_SCALE_TOP = 95;
+const PV_SCALE_BOTTOM = 252;
+
+class PluviometerCard extends HTMLElement {
+  static getConfigElement() { return document.createElement("pluviometer-card-editor"); }
+
+  static getStubConfig(hass) {
+    const ids = Object.keys(hass.states).filter((e) => e.startsWith("sensor."));
+    const byClass = ids.filter((e) => hass.states[e].attributes.device_class === "precipitation");
+    const total = byClass.find((e) => hass.states[e].attributes.state_class === "total_increasing");
+    const entity = total || byClass[0] || ids.find((e) => hass.states[e].attributes.unit_of_measurement === "mm") || "";
+    return { entity: entity, max_level: 40 };
+  }
+
+  setConfig(config) {
+    if (!config || !config.entity) throw new Error("Please define an entity (sensor)");
+    let max = parseFloat(config.max_level);
+    if (!(max > 0)) max = 40;
+    let dec = parseInt(config.decimals, 10);
+    if (!(dec >= 0 && dec <= 3)) dec = 1;
+    this._config = { ...config, max_level: max, decimals: dec, water_color: config.water_color || "#3d9bd9" };
+    this._built = false;
+  }
+
+  set hass(hass) {
+    this._hass = hass;
+    if (!this._built) { this._build(); this._built = true; }
+    this._update();
+  }
+
+  getCardSize() { return 4; }
+
+  _ticks() {
+    const max = this._config.max_level;
+    const major = pvNiceStep(max);
+    const minor = major / 5;
+    const px = (v) => PV_SCALE_BOTTOM - (v / max) * (PV_SCALE_BOTTOM - PV_SCALE_TOP);
+    let out = "";
+    for (let v = 0; v <= max + 1e-9; v += minor) {
+      const isMajor = Math.abs(v / major - Math.round(v / major)) < 1e-6;
+      if (v < 1e-9 && !isMajor) continue;
+      const y = px(v).toFixed(1);
+      const len = isMajor ? 13 : 7;
+      out += `<line x1="64" y1="${y}" x2="${64 + len}" y2="${y}" class="pv-tick${isMajor ? " pv-tick-major" : ""}"/>`;
+      if (isMajor && v > 1e-9) {
+        const label = major < 1 ? v.toFixed(2).replace(/\.?0+$/, "") : Math.round(v);
+        out += `<text x="${64 + len + 2}" y="${(px(v) + 3).toFixed(1)}" class="pv-tick-label">${label}</text>`;
+      }
+    }
+    return out;
+  }
+
+  _build() {
+    this.innerHTML = "";
+    const c = this._config;
+    const card = document.createElement("ha-card");
+    card.innerHTML = `
+      <style>
+        .pv-wrap { display: flex; align-items: center; gap: 4px; padding: 12px 16px; cursor: pointer; }
+        .pv-gauge { flex: none; width: 118px; }
+        .pv-gauge svg { display: block; width: 100%; height: auto; }
+        .pv-info { flex: 1; min-width: 0; padding-left: 4px; }
+        .pv-name { font-size: 1em; font-weight: 500; color: var(--primary-text-color);
+          overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .pv-value { font-size: 2.1em; font-weight: 700; color: var(--primary-text-color); line-height: 1.2; }
+        .pv-unit { font-size: 0.5em; font-weight: 400; color: var(--secondary-text-color); margin-left: 2px; }
+        .pv-label { font-size: 0.85em; color: var(--secondary-text-color); }
+        .pv-secondary { font-size: 0.85em; color: var(--secondary-text-color); margin-top: 6px; }
+        .pv-glass { fill: rgba(150, 185, 178, 0.14); stroke: var(--pv-outline-color, #7f9494); stroke-width: 2.5; }
+        .pv-glass-inner { fill: rgba(150, 185, 178, 0.10); stroke: var(--pv-outline-color, #7f9494); stroke-width: 1; opacity: 0.6; }
+        .pv-water { transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
+        .pv-bracket { fill: var(--pv-bracket-color, #2e2e2e); }
+        .pv-bracket-edge { fill: var(--pv-bracket-color, #2e2e2e); stroke: var(--pv-bracket-edge-color, #4a4a4a); stroke-width: 1; }
+        .pv-tick { stroke: var(--secondary-text-color); stroke-width: 1; opacity: 0.55; }
+        .pv-tick-major { stroke-width: 1.6; opacity: 0.8; }
+        .pv-tick-label { font-size: 9.5px; fill: var(--secondary-text-color); font-family: inherit; }
+        .pv-unavailable .pv-gauge, .pv-unavailable .pv-value { opacity: 0.4; }
+      </style>
+      <div class="pv-wrap" id="pv-wrap">
+        <div class="pv-gauge">
+        <svg viewBox="0 0 160 272" xmlns="http://www.w3.org/2000/svg" role="img">
+          <defs>
+            <clipPath id="pv-clip-${this._uid()}">
+              <path d="M60.5 84 L64.5 254 Q64.6 256 67 256 L83 256 Q85.4 256 85.5 254 L89.5 84 Z"/>
+            </clipPath>
+          </defs>
+          <g clip-path="url(#pv-clip-${this._uid()})">
+            <g class="pv-water" id="pv-water">
+              <rect id="pv-water-rect" x="55" y="${PV_SCALE_TOP}" width="40" height="${PV_SCALE_BOTTOM - PV_SCALE_TOP + 12}" fill="${c.water_color}" opacity="0.78"/>
+              <ellipse id="pv-water-top" cx="75" cy="${PV_SCALE_TOP}" rx="14" ry="2.6" fill="${c.water_color}" opacity="0.95"/>
+            </g>
+          </g>
+          <path class="pv-glass" d="M31 16 Q36 62 57 80 L58 84 L92 84 L93 80 Q114 62 119 16"/>
+          <ellipse class="pv-glass" cx="75" cy="15" rx="44" ry="8.5"/>
+          <ellipse class="pv-glass-inner" cx="75" cy="17" rx="37" ry="6.5"/>
+          <path class="pv-glass" d="M58 84 L62.5 253 Q62.7 258 68 258 L82 258 Q87.3 258 87.5 253 L92 84 Z" fill="none"/>
+          <line x1="58" y1="84" x2="92" y2="84" stroke="var(--pv-outline-color, #7f9494)" stroke-width="2"/>
+          <g id="pv-ticks">${this._ticks()}</g>
+          <rect class="pv-bracket-edge" x="50" y="138" width="50" height="17" rx="3"/>
+          <rect class="pv-bracket" x="97" y="142" width="10" height="9"/>
+          <path class="pv-bracket-edge" d="M107 140 Q124 132 130 130 L130 163 Q124 161 107 153 Z"/>
+        </svg>
+        </div>
+        <div class="pv-info">
+          <div class="pv-name" id="pv-name"></div>
+          <div class="pv-value"><span id="pv-value">—</span><span class="pv-unit" id="pv-unit"></span></div>
+          <div class="pv-label" id="pv-label"></div>
+          <div class="pv-secondary" id="pv-secondary" hidden></div>
+        </div>
+      </div>
+    `;
+    this.appendChild(card);
+    this._el = {};
+    for (const id of ["pv-wrap", "pv-water", "pv-water-rect", "pv-water-top", "pv-name", "pv-value", "pv-unit", "pv-label", "pv-secondary"]) {
+      this._el[id] = card.querySelector("#" + id);
+    }
+    this._el["pv-wrap"].addEventListener("click", () => {
+      this.dispatchEvent(new CustomEvent("hass-more-info", {
+        detail: { entityId: this._config.entity }, bubbles: true, composed: true,
+      }));
+    });
+  }
+
+  _uid() {
+    if (!this.__uid) this.__uid = Math.random().toString(36).slice(2, 8);
+    return this.__uid;
+  }
+
+  _update() {
+    if (!this._hass || !this._built) return;
+    const c = this._config;
+    const t = pvT(this._hass, c);
+    const st = this._hass.states[c.entity];
+    const wrap = this._el["pv-wrap"];
+
+    const name = c.name || (st && st.attributes.friendly_name) || c.entity;
+    this._el["pv-name"].textContent = name;
+    this._el["pv-label"].textContent = c.label || "";
+
+    if (!st || st.state === "unavailable" || st.state === "unknown" || isNaN(parseFloat(st.state))) {
+      wrap.classList.add("pv-unavailable");
+      this._el["pv-value"].textContent = "—";
+      this._el["pv-unit"].textContent = "";
+      if (!c.label) this._el["pv-label"].textContent = t.unavailable;
+      this._setLevel(0);
+      return;
+    }
+    wrap.classList.remove("pv-unavailable");
+
+    const value = parseFloat(st.state);
+    const unit = c.unit || st.attributes.unit_of_measurement || "mm";
+    this._el["pv-value"].textContent = pvFmt(value, c.decimals);
+    this._el["pv-unit"].textContent = " " + unit;
+    this._setLevel(Math.max(0, Math.min(1, value / c.max_level)));
+
+    const sec = this._el["pv-secondary"];
+    if (c.secondary_entity && this._hass.states[c.secondary_entity]) {
+      const s2 = this._hass.states[c.secondary_entity];
+      const u2 = s2.attributes.unit_of_measurement || "";
+      const n2 = parseFloat(s2.state);
+      sec.hidden = false;
+      sec.textContent = (s2.attributes.friendly_name || c.secondary_entity) + " : " +
+        (isNaN(n2) ? s2.state : pvFmt(n2, c.decimals)) + (u2 ? " " + u2 : "");
+    } else {
+      sec.hidden = true;
+    }
+  }
+
+  _setLevel(frac) {
+    const travel = PV_SCALE_BOTTOM - PV_SCALE_TOP;
+    const g = this._el["pv-water"];
+    g.style.transform = `translateY(${((1 - frac) * travel).toFixed(1)}px)`;
+    g.style.opacity = frac > 0 ? "1" : "0";
+  }
+}
+
+class PluviometerCardEditor extends HTMLElement {
+  setConfig(config) {
+    this._config = { ...config };
+    this._render();
+  }
+  set hass(hass) { this._hass = hass; this._render(); }
+
+  _render() {
+    if (!this._hass || !this._config) return;
+    const c = this._config;
+    const t = pvT(this._hass, c);
+    if (!this._form) {
+      this.innerHTML = "";
+      this._form = document.createElement("ha-form");
+      this._form.computeLabel = (s) => s.label || s.name;
+      this._form.addEventListener("value-changed", (ev) => {
+        const v = ev.detail.value;
+        const out = { type: "custom:pluviometer-card", entity: v.entity };
+        if (v.name) out.name = v.name;
+        if (v.label) out.label = v.label;
+        if (v.max_level != null && v.max_level !== "" && parseFloat(v.max_level) !== 40) out.max_level = parseFloat(v.max_level);
+        if (v.decimals != null && v.decimals !== "" && parseInt(v.decimals, 10) !== 1) out.decimals = parseInt(v.decimals, 10);
+        if (v.water_color && v.water_color !== "#3d9bd9") out.water_color = v.water_color;
+        if (v.secondary_entity) out.secondary_entity = v.secondary_entity;
+        if (v.language) out.language = v.language;
+        this._config = out;
+        this._render();
+        this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: out }, bubbles: true, composed: true }));
+      });
+      this.appendChild(this._form);
+    }
+
+    this._form.hass = this._hass;
+    this._form.data = {
+      entity: c.entity || "",
+      name: c.name || "",
+      label: c.label || "",
+      max_level: c.max_level != null ? c.max_level : 40,
+      decimals: c.decimals != null ? c.decimals : 1,
+      water_color: c.water_color || "#3d9bd9",
+      secondary_entity: c.secondary_entity || "",
+      language: c.language || "",
+    };
+    this._form.schema = [
+      { name: "entity", label: t.entity, selector: { entity: { domain: "sensor" } } },
+      { name: "name", label: t.name, selector: { text: {} } },
+      { name: "label", label: t.label, selector: { text: {} } },
+      { name: "max_level", label: t.max, selector: { number: { mode: "box", step: "any", min: 0 } } },
+      { name: "decimals", label: t.decimals, selector: { number: { mode: "box", step: 1, min: 0, max: 3 } } },
+      { name: "water_color", label: t.color, selector: { text: {} } },
+      { name: "secondary_entity", label: t.secondary, selector: { entity: { domain: "sensor" } } },
+      { name: "language", label: t.language, selector: { select: { mode: "dropdown", options: [{ value: "", label: t.auto }].concat(Object.keys(PV_LANGNAMES).map((l) => ({ value: l, label: PV_LANGNAMES[l] }))) } } },
+    ];
+  }
+}
+
+customElements.define("pluviometer-card", PluviometerCard);
+customElements.define("pluviometer-card-editor", PluviometerCardEditor);
+
+window.customCards = window.customCards || [];
+window.customCards.push({
+  type: "pluviometer-card",
+  name: "Pluviometer Card",
+  description: "A rain gauge that fills up like the real thing: funnel, graduated tube and mounting bracket. Works with any precipitation sensor.",
+  preview: true,
+  documentationURL: "https://github.com/ADNPolymerase/pluviometer-card",
+});
