@@ -14,37 +14,43 @@ const PV_T = {
     unavailable: "Unavailable", bracket: "Show mounting bracket",
     notCumul: "This sensor does not look like a daily total.", createBtn: "Create the daily total sensor",
     creating: "Creating…", created: "Created and selected: ", createError: "Creation failed: ",
-    dailySuffix: "daily total", totalSuffix: "total" },
+    dailySuffix: "daily total", totalSuffix: "total",
+    hist: "Last 24 h", noData: "No data", histOpt: "Show the 24 h history button" },
   fr: { entity: "Capteur de pluie", name: "Nom", label: "Sous-titre", max: "Maximum de précipitations par jour (jauge pleine)", decimals: "Décimales",
     color: "Couleur de l'eau (hex)", secondary: "Entité secondaire (ex. intensité)", language: "Langue", auto: "Auto",
     unavailable: "Indisponible", bracket: "Afficher le collier de fixation",
     notCumul: "Ce capteur ne semble pas être un cumul journalier.", createBtn: "Créer le capteur de cumul journalier",
     creating: "Création…", created: "Créé et sélectionné : ", createError: "Échec de la création : ",
-    dailySuffix: "cumul du jour", totalSuffix: "total" },
+    dailySuffix: "cumul du jour", totalSuffix: "total",
+    hist: "Dernières 24 h", noData: "Aucune donnée", histOpt: "Afficher le bouton tracé 24 h" },
   de: { entity: "Regensensor", name: "Name", label: "Untertitel", max: "Tagesmaximum Niederschlag (volle Skala)", decimals: "Dezimalstellen",
     color: "Wasserfarbe (Hex)", secondary: "Sekundäre Entität (z. B. Regenrate)", language: "Sprache", auto: "Auto",
     unavailable: "Nicht verfügbar", bracket: "Halterung anzeigen",
     notCumul: "Dieser Sensor scheint keine Tagessumme zu sein.", createBtn: "Tagessummen-Sensor erstellen",
     creating: "Wird erstellt…", created: "Erstellt und ausgewählt: ", createError: "Fehlgeschlagen: ",
-    dailySuffix: "Tagessumme", totalSuffix: "gesamt" },
+    dailySuffix: "Tagessumme", totalSuffix: "gesamt",
+    hist: "Letzte 24 h", noData: "Keine Daten", histOpt: "24-h-Verlauf-Button anzeigen" },
   es: { entity: "Sensor de lluvia", name: "Nombre", label: "Subtítulo", max: "Máximo diario de precipitación (escala completa)", decimals: "Decimales",
     color: "Color del agua (hex)", secondary: "Entidad secundaria (p. ej. intensidad)", language: "Idioma", auto: "Auto",
     unavailable: "No disponible", bracket: "Mostrar el soporte",
     notCumul: "Este sensor no parece un total diario.", createBtn: "Crear el sensor de total diario",
     creating: "Creando…", created: "Creado y seleccionado: ", createError: "Error al crear: ",
-    dailySuffix: "total diario", totalSuffix: "total" },
+    dailySuffix: "total diario", totalSuffix: "total",
+    hist: "Últimas 24 h", noData: "Sin datos", histOpt: "Mostrar el botón de historial 24 h" },
   it: { entity: "Sensore pioggia", name: "Nome", label: "Sottotitolo", max: "Massimo giornaliero di pioggia (scala piena)", decimals: "Decimali",
     color: "Colore dell'acqua (hex)", secondary: "Entità secondaria (es. intensità)", language: "Lingua", auto: "Auto",
     unavailable: "Non disponibile", bracket: "Mostra la staffa",
     notCumul: "Questo sensore non sembra un totale giornaliero.", createBtn: "Crea il sensore del totale giornaliero",
     creating: "Creazione…", created: "Creato e selezionato: ", createError: "Creazione fallita: ",
-    dailySuffix: "totale giornaliero", totalSuffix: "totale" },
+    dailySuffix: "totale giornaliero", totalSuffix: "totale",
+    hist: "Ultime 24 h", noData: "Nessun dato", histOpt: "Mostra il pulsante storico 24 h" },
   nl: { entity: "Regensensor", name: "Naam", label: "Ondertitel", max: "Dagelijks neerslagmaximum (volle schaal)", decimals: "Decimalen",
     color: "Waterkleur (hex)", secondary: "Secundaire entiteit (bijv. regenintensiteit)", language: "Taal", auto: "Auto",
     unavailable: "Niet beschikbaar", bracket: "Beugel tonen",
     notCumul: "Deze sensor lijkt geen dagtotaal te zijn.", createBtn: "Dagtotaal-sensor aanmaken",
     creating: "Aanmaken…", created: "Aangemaakt en geselecteerd: ", createError: "Aanmaken mislukt: ",
-    dailySuffix: "dagtotaal", totalSuffix: "totaal" },
+    dailySuffix: "dagtotaal", totalSuffix: "totaal",
+    hist: "Afgelopen 24 u", noData: "Geen gegevens", histOpt: "Toon de 24 u-geschiedenisknop" },
 };
 
 function pvSlugify(s) {
@@ -148,6 +154,16 @@ class PluviometerCard extends HTMLElement {
         .pv-tick-major { stroke-width: 1.6; opacity: 0.8; }
         .pv-tick-label { font-size: 9.5px; fill: var(--secondary-text-color); font-family: inherit; }
         .pv-unavailable .pv-gauge, .pv-unavailable .pv-value { opacity: 0.4; }
+        .pv-hist-toggle { display: flex; align-items: center; justify-content: center; gap: 6px;
+          padding: 2px 0 10px; cursor: pointer; color: var(--secondary-text-color);
+          font-size: 0.85em; user-select: none; }
+        .pv-hist-toggle svg { transition: transform 0.3s; }
+        .pv-hist-toggle.pv-open svg { transform: rotate(180deg); }
+        .pv-hist { overflow: hidden; max-height: 0; transition: max-height 0.35s ease; padding: 0 16px; }
+        .pv-hist.pv-open { max-height: 220px; padding-bottom: 14px; }
+        .pv-hist-status { text-align: center; color: var(--secondary-text-color); font-size: 0.85em; padding: 10px 0; }
+        .pv-hist-grid { stroke: var(--divider-color, #e0e0e0); stroke-width: 1; }
+        .pv-hist-axis { font-size: 10px; fill: var(--secondary-text-color); }
       </style>
       <div class="pv-wrap" id="pv-wrap">
         <div class="pv-gauge">
@@ -182,10 +198,16 @@ class PluviometerCard extends HTMLElement {
           <div class="pv-secondary" id="pv-secondary" hidden></div>
         </div>
       </div>
+      ${c.show_history ? `
+      <div class="pv-hist-toggle" id="pv-hist-toggle">
+        <svg width="15" height="15" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="pv-hist-label"></span>
+      </div>
+      <div class="pv-hist" id="pv-hist"><div id="pv-hist-body"></div></div>` : ""}
     `;
     this.appendChild(card);
     this._el = {};
-    for (const id of ["pv-wrap", "pv-water", "pv-water-rect", "pv-water-top", "pv-name", "pv-value", "pv-unit", "pv-label", "pv-secondary"]) {
+    for (const id of ["pv-wrap", "pv-water", "pv-water-rect", "pv-water-top", "pv-name", "pv-value", "pv-unit", "pv-label", "pv-secondary", "pv-hist-toggle", "pv-hist", "pv-hist-label", "pv-hist-body"]) {
       this._el[id] = card.querySelector("#" + id);
     }
     this._el["pv-wrap"].addEventListener("click", () => {
@@ -193,6 +215,74 @@ class PluviometerCard extends HTMLElement {
         detail: { entityId: this._config.entity }, bubbles: true, composed: true,
       }));
     });
+    if (this._el["pv-hist-toggle"]) {
+      this._el["pv-hist-toggle"].addEventListener("click", (e) => {
+        e.stopPropagation();
+        this._toggleHist();
+      });
+    }
+  }
+
+  _toggleHist() {
+    this._histOpen = !this._histOpen;
+    this._el["pv-hist-toggle"].classList.toggle("pv-open", this._histOpen);
+    this._el["pv-hist"].classList.toggle("pv-open", this._histOpen);
+    if (this._histOpen && (!this._histAt || Date.now() - this._histAt > 300000)) this._loadHist();
+  }
+
+  async _loadHist() {
+    const t = pvT(this._hass, this._config);
+    const body = this._el["pv-hist-body"];
+    if (!body.innerHTML) body.innerHTML = `<div class="pv-hist-status">…</div>`;
+    try {
+      const start = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
+      const url = `history/period/${start}?filter_entity_id=${this._config.entity}&minimal_response&no_attributes`;
+      const res = await this._hass.callApi("GET", url);
+      const raw = (res && res[0]) || [];
+      const pts = raw
+        .map((s) => ({ t: new Date(s.last_changed || s.last_updated).getTime(), v: parseFloat(s.state) }))
+        .filter((p) => !isNaN(p.v) && !isNaN(p.t));
+      this._histAt = Date.now();
+      body.innerHTML = pts.length ? this._histSvg(pts) : `<div class="pv-hist-status">${t.noData}</div>`;
+    } catch (e) {
+      body.innerHTML = `<div class="pv-hist-status">${t.noData}</div>`;
+    }
+  }
+
+  _histSvg(pts) {
+    const W = 480, H = 150, L = 34, R = 8, T = 10, B = 20;
+    const now = Date.now(), start = now - 24 * 3600 * 1000;
+    const vmax0 = Math.max(...pts.map((p) => p.v), 0);
+    const step = pvNiceStep(vmax0 > 0 ? vmax0 : 1);
+    const vmax = Math.max(Math.ceil((vmax0 * 1.05) / step) * step, step);
+    const x = (t) => L + ((Math.max(t, start) - start) / (now - start)) * (W - L - R);
+    const y = (v) => T + (1 - v / vmax) * (H - T - B);
+    let d = "";
+    for (let i = 0; i < pts.length; i++) {
+      const px = x(pts[i].t).toFixed(1), py = y(pts[i].v).toFixed(1);
+      if (!d) d = `M ${px} ${py}`;
+      else d += ` L ${px} ${y(pts[i - 1].v).toFixed(1)} L ${px} ${py}`;
+    }
+    d += ` L ${x(now).toFixed(1)} ${y(pts[pts.length - 1].v).toFixed(1)}`;
+    const area = `${d} L ${x(now).toFixed(1)} ${y(0)} L ${x(pts[0].t).toFixed(1)} ${y(0)} Z`;
+    const fmtV = (v) => (vmax >= 10 ? Math.round(v) : Math.round(v * 10) / 10);
+    let grid = "";
+    for (const f of [0, 0.5, 1]) {
+      const gy = y(vmax * f).toFixed(1);
+      grid += `<line class="pv-hist-grid" x1="${L}" y1="${gy}" x2="${W - R}" y2="${gy}"/>`;
+      grid += `<text class="pv-hist-axis" x="${L - 4}" y="${(+gy + 3.5).toFixed(1)}" text-anchor="end">${fmtV(vmax * f)}</text>`;
+    }
+    for (let k = 0; k <= 4; k++) {
+      const tk = start + k * 6 * 3600 * 1000;
+      const h = new Date(tk).getHours();
+      grid += `<text class="pv-hist-axis" x="${x(tk).toFixed(1)}" y="${H - 6}" text-anchor="${k === 0 ? "start" : k === 4 ? "end" : "middle"}">${h}h</text>`;
+    }
+    const col = this._config.water_color;
+    return `<svg viewBox="0 0 ${W} ${H}" style="display:block;width:100%;height:auto;" xmlns="http://www.w3.org/2000/svg">
+      ${grid}
+      <path d="${area}" fill="${col}" opacity="0.22"/>
+      <path d="${d}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>
+    </svg>`;
   }
 
   _uid() {
@@ -210,6 +300,10 @@ class PluviometerCard extends HTMLElement {
     const name = c.name || (st && st.attributes.friendly_name) || c.entity;
     this._el["pv-name"].textContent = name;
     this._el["pv-label"].textContent = c.label || "";
+    if (this._el["pv-hist-label"]) {
+      this._el["pv-hist-label"].textContent = t.hist;
+      if (this._histOpen && this._histAt && Date.now() - this._histAt > 600000) this._loadHist();
+    }
 
     if (!st || st.state === "unavailable" || st.state === "unknown" || isNaN(parseFloat(st.state))) {
       wrap.classList.add("pv-unavailable");
@@ -272,6 +366,7 @@ class PluviometerCardEditor extends HTMLElement {
         if (v.decimals != null && v.decimals !== "" && parseInt(v.decimals, 10) !== 1) out.decimals = parseInt(v.decimals, 10);
         if (v.water_color && v.water_color !== "#3d9bd9") out.water_color = v.water_color;
         if (v.show_bracket === false) out.show_bracket = false;
+        if (v.show_history) out.show_history = true;
         if (v.secondary_entity) out.secondary_entity = v.secondary_entity;
         if (v.language) out.language = v.language;
         this._config = out;
@@ -290,6 +385,7 @@ class PluviometerCardEditor extends HTMLElement {
       decimals: c.decimals != null ? c.decimals : 1,
       water_color: c.water_color || "#3d9bd9",
       show_bracket: c.show_bracket !== false,
+      show_history: c.show_history === true,
       secondary_entity: c.secondary_entity || "",
       language: c.language || "",
     };
@@ -301,6 +397,7 @@ class PluviometerCardEditor extends HTMLElement {
       { name: "decimals", label: t.decimals, selector: { number: { mode: "box", step: 1, min: 0, max: 3 } } },
       { name: "water_color", label: t.color, selector: { text: {} } },
       { name: "show_bracket", label: t.bracket, selector: { boolean: {} } },
+      { name: "show_history", label: t.histOpt, selector: { boolean: {} } },
       { name: "secondary_entity", label: t.secondary, selector: { entity: { domain: "sensor" } } },
       { name: "language", label: t.language, selector: { select: { mode: "dropdown", options: [{ value: "", label: t.auto }].concat(Object.keys(PV_LANGNAMES).map((l) => ({ value: l, label: PV_LANGNAMES[l] }))) } } },
     ];

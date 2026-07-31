@@ -26,6 +26,7 @@ bracket — and fills it with water as the rain falls. Works with any precipitat
 - **Auto graduations**: tick marks and labels adapt to the scale you choose (`max_level` = daily maximum).
 - Semi-transparent bracket so graduations stay readable — or hide it with `show_bracket: false`.
 - **No daily total sensor? One click fixes it**: if the selected sensor isn't a daily cumulative, the editor offers a button that creates the needed helpers for you (a daily utility meter — plus an integration sensor first when your source is a rate in mm/h).
+- **Collapsible 24 h history**: enable `show_history` and the card gets a discreet button that expands a 24 h chart of the sensor (step trace, drawn with the water color, data from the HA history API).
 - Unit read from the entity (mm, in…), configurable decimals and water color.
 - Optional subtitle (e.g. "today") and secondary entity (e.g. rain rate mm/h).
 - Native HA editor (entity picker) + full YAML control. Tap opens more-info.
@@ -63,6 +64,7 @@ secondary_entity: sensor.rain_gauge_precipitation   # optional, e.g. rain rate
 | `decimals` | `1` | Decimals for the displayed value |
 | `water_color` | `#3d9bd9` | Water fill color |
 | `show_bracket` | `true` | Show the mounting bracket (semi-transparent) |
+| `show_history` | `false` | Adds the collapsible 24 h history button |
 | `unit` | entity unit | Unit override |
 | `secondary_entity` | — | Extra sensor shown under the value |
 | `language` | auto | `en`, `fr`, `de`, `es`, `it`, `nl` |
