@@ -1,8 +1,8 @@
 # Pluviometer Card
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
-[![GitHub Release](https://img.shields.io/github/v/release/ADNPolymerase/pluviometer-card?sort=semver)](https://github.com/ADNPolymerase/pluviometer-card/releases)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ADNPolymerase/pluviometer-card/blob/main/LICENSE)
+[![GitHub Release](https://img.shields.io/github/v/release/ADNPolymerase/ha-pluviometer-card?sort=semver)](https://github.com/ADNPolymerase/ha-pluviometer-card/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ADNPolymerase/ha-pluviometer-card/blob/main/LICENSE)
 
 > 🇬🇧 [Read in English](README.md)
 
@@ -10,7 +10,7 @@ Une card Lovelace qui dessine un **vrai pluviomètre de jardin** — entonnoir, 
 collier de fixation — et le remplit d'eau au fil de la pluie. Fonctionne avec n'importe quel
 capteur de précipitations (Netatmo, intégrations météo, DIY…), en mm ou en pouces.
 
-![Pluviometer Card](https://raw.githubusercontent.com/ADNPolymerase/pluviometer-card/main/docs/screenshot.fr.png)
+![Pluviometer Card](https://raw.githubusercontent.com/ADNPolymerase/ha-pluviometer-card/main/docs/screenshot.fr.png)
 
 ## Fonctionnalités
 
@@ -25,10 +25,10 @@ capteur de précipitations (Netatmo, intégrations météo, DIY…), en mm ou en
 ## Installation (HACS)
 
 1. HACS → trois points → **Dépôts personnalisés**
-2. Ajouter `https://github.com/ADNPolymerase/pluviometer-card` avec la catégorie **Dashboard**
+2. Ajouter `https://github.com/ADNPolymerase/ha-pluviometer-card` avec la catégorie **Dashboard**
 3. Installer **Pluviometer Card**, puis rafraîchir le navigateur (Ctrl+Shift+R / Cmd+Shift+R)
 
-Alternative manuelle : copier `pluviometer-card.js` depuis la [dernière release](https://github.com/ADNPolymerase/pluviometer-card/releases) vers `config/www/`, puis ajouter `/local/pluviometer-card.js` comme ressource JavaScript-module.
+Alternative manuelle : copier `pluviometer-card.js` depuis la [dernière release](https://github.com/ADNPolymerase/ha-pluviometer-card/releases) vers `config/www/`, puis ajouter `/local/pluviometer-card.js` comme ressource JavaScript-module.
 
 ## Utilisation
 

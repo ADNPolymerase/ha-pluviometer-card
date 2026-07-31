@@ -395,5 +395,5 @@ window.customCards.push({
   name: "Pluviometer Card",
   description: "A rain gauge that fills up like the real thing: funnel, graduated tube and mounting bracket. Works with any precipitation sensor.",
   preview: true,
-  documentationURL: "https://github.com/ADNPolymerase/pluviometer-card",
+  documentationURL: "https://github.com/ADNPolymerase/ha-pluviometer-card",
 });

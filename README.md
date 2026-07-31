@@ -1,10 +1,10 @@
 # Pluviometer Card
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
-[![GitHub Release](https://img.shields.io/github/v/release/ADNPolymerase/pluviometer-card?sort=semver)](https://github.com/ADNPolymerase/pluviometer-card/releases)
-[![HACS Action](https://github.com/ADNPolymerase/pluviometer-card/actions/workflows/hacs.yml/badge.svg)](https://github.com/ADNPolymerase/pluviometer-card/actions/workflows/hacs.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/ADNPolymerase/ha-pluviometer-card?sort=semver)](https://github.com/ADNPolymerase/ha-pluviometer-card/releases)
+[![HACS Action](https://github.com/ADNPolymerase/ha-pluviometer-card/actions/workflows/hacs.yml/badge.svg)](https://github.com/ADNPolymerase/ha-pluviometer-card/actions/workflows/hacs.yml)
 [![HA Version](https://img.shields.io/badge/Home%20Assistant-2024.1%2B-blue.svg)](https://www.home-assistant.io)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ADNPolymerase/pluviometer-card/blob/main/LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ADNPolymerase/ha-pluviometer-card/blob/main/LICENSE)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow.svg?logo=buy-me-a-coffee)](https://buymeacoffee.com/adnpolymerase)
 
 <a href="https://buymeacoffee.com/adnpolymerase" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png" alt="Buy Me A Coffee" height="60"></a>
@@ -18,7 +18,7 @@ bracket — and fills it with water as the rain falls. Works with any precipitat
 
 > 🇫🇷 [Lire en français](README.fr.md)
 
-![Pluviometer Card](https://raw.githubusercontent.com/ADNPolymerase/pluviometer-card/main/docs/screenshot.png)
+![Pluviometer Card](https://raw.githubusercontent.com/ADNPolymerase/ha-pluviometer-card/main/docs/screenshot.png)
 
 ## Features
 
@@ -33,10 +33,10 @@ bracket — and fills it with water as the rain falls. Works with any precipitat
 ## Installation (HACS)
 
 1. HACS → three dots → **Custom repositories**
-2. Add `https://github.com/ADNPolymerase/pluviometer-card` with category **Dashboard**
+2. Add `https://github.com/ADNPolymerase/ha-pluviometer-card` with category **Dashboard**
 3. Install **Pluviometer Card**, then hard-refresh your browser (Ctrl+Shift+R / Cmd+Shift+R)
 
-Manual alternative: copy `pluviometer-card.js` from the [latest release](https://github.com/ADNPolymerase/pluviometer-card/releases) to `config/www/`, then add `/local/pluviometer-card.js` as a JavaScript-module resource.
+Manual alternative: copy `pluviometer-card.js` from the [latest release](https://github.com/ADNPolymerase/ha-pluviometer-card/releases) to `config/www/`, then add `/local/pluviometer-card.js` as a JavaScript-module resource.
 
 ## Usage
 
