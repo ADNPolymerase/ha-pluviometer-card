@@ -14,8 +14,10 @@ capteur de précipitations (Netatmo, intégrations météo, DIY…), en mm ou en
 
 ## Fonctionnalités
 
-- Silhouette fidèle : entonnoir évasé, tube gradué, collier noir, niveau d'eau animé.
-- **Graduations automatiques** : ticks et labels s'adaptent à l'échelle choisie (`max_level`).
+- Silhouette fidèle : entonnoir évasé, tube gradué, collier de fixation, niveau d'eau animé.
+- **Graduations automatiques** : ticks et labels s'adaptent à l'échelle choisie (`max_level` = maximum par jour).
+- Collier semi-transparent pour laisser les graduations lisibles — ou masquable avec `show_bracket: false`.
+- **Pas de capteur de cumul journalier ? Un clic suffit** : si le capteur choisi n'est pas un cumul, l'éditeur propose un bouton qui crée les helpers nécessaires (compteur `utility_meter` à cycle journalier — précédé d'un capteur `integration` si la source est une intensité en mm/h).
 - Unité lue sur l'entité (mm, in…), décimales et couleur de l'eau configurables.
 - Sous-titre optionnel (ex. « aujourd'hui ») et entité secondaire (ex. intensité mm/h).
 - Éditeur natif HA (sélecteur d'entité) + YAML complet. Un tap ouvre le more-info.
@@ -46,9 +48,10 @@ secondary_entity: sensor.pluviometre_precipitation   # optionnel, ex. intensité
 | `entity` | **requis** | Tout capteur numérique (précipitations recommandé) |
 | `name` | friendly name | Titre affiché à côté de la jauge |
 | `label` | — | Sous-titre sous la valeur (ex. « aujourd'hui ») |
-| `max_level` | `40` | Valeur jauge pleine, dans l'unité de l'entité |
+| `max_level` | `40` | Maximum de précipitations par jour (jauge pleine), dans l'unité de l'entité |
 | `decimals` | `1` | Décimales de la valeur affichée |
 | `water_color` | `#3d9bd9` | Couleur de l'eau |
+| `show_bracket` | `true` | Afficher le collier de fixation (semi-transparent) |
 | `unit` | unité de l'entité | Forçage de l'unité |
 | `secondary_entity` | — | Capteur supplémentaire affiché sous la valeur |
 | `language` | auto | `en`, `fr`, `de`, `es`, `it`, `nl` |

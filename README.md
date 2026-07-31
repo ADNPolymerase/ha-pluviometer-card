@@ -22,8 +22,10 @@ bracket — and fills it with water as the rain falls. Works with any precipitat
 
 ## Features
 
-- Faithful rain-gauge look: flared funnel, graduated tube, black mounting bracket, animated water level.
-- **Auto graduations**: tick marks and labels adapt to the scale you choose (`max_level`).
+- Faithful rain-gauge look: flared funnel, graduated tube, mounting bracket, animated water level.
+- **Auto graduations**: tick marks and labels adapt to the scale you choose (`max_level` = daily maximum).
+- Semi-transparent bracket so graduations stay readable — or hide it with `show_bracket: false`.
+- **No daily total sensor? One click fixes it**: if the selected sensor isn't a daily cumulative, the editor offers a button that creates the needed helpers for you (a daily utility meter — plus an integration sensor first when your source is a rate in mm/h).
 - Unit read from the entity (mm, in…), configurable decimals and water color.
 - Optional subtitle (e.g. "today") and secondary entity (e.g. rain rate mm/h).
 - Native HA editor (entity picker) + full YAML control. Tap opens more-info.
@@ -57,9 +59,10 @@ secondary_entity: sensor.rain_gauge_precipitation   # optional, e.g. rain rate
 | `entity` | **required** | Any numeric sensor (precipitation recommended) |
 | `name` | friendly name | Title shown next to the gauge |
 | `label` | — | Subtitle under the value (e.g. "today") |
-| `max_level` | `40` | Full-gauge value, in the entity's unit |
+| `max_level` | `40` | Daily precipitation maximum (full gauge), in the entity's unit |
 | `decimals` | `1` | Decimals for the displayed value |
 | `water_color` | `#3d9bd9` | Water fill color |
+| `show_bracket` | `true` | Show the mounting bracket (semi-transparent) |
 | `unit` | entity unit | Unit override |
 | `secondary_entity` | — | Extra sensor shown under the value |
 | `language` | auto | `en`, `fr`, `de`, `es`, `it`, `nl` |

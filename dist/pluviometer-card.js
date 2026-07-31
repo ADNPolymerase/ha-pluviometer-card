@@ -9,25 +9,48 @@ console.info(
 const PV_LANGNAMES = { en: "English", fr: "Français", de: "Deutsch", es: "Español", it: "Italiano", nl: "Nederlands" };
 
 const PV_T = {
-  en: { entity: "Rain sensor", name: "Name", label: "Subtitle", max: "Gauge scale (max value)", decimals: "Decimals",
+  en: { entity: "Rain sensor", name: "Name", label: "Subtitle", max: "Daily precipitation maximum (full gauge)", decimals: "Decimals",
     color: "Water color (hex)", secondary: "Secondary entity (e.g. rain rate)", language: "Language", auto: "Auto",
-    unavailable: "Unavailable" },
-  fr: { entity: "Capteur de pluie", name: "Nom", label: "Sous-titre", max: "Échelle de la jauge (valeur max)", decimals: "Décimales",
+    unavailable: "Unavailable", bracket: "Show mounting bracket",
+    notCumul: "This sensor does not look like a daily total.", createBtn: "Create the daily total sensor",
+    creating: "Creating…", created: "Created and selected: ", createError: "Creation failed: ",
+    dailySuffix: "daily total", totalSuffix: "total" },
+  fr: { entity: "Capteur de pluie", name: "Nom", label: "Sous-titre", max: "Maximum de précipitations par jour (jauge pleine)", decimals: "Décimales",
     color: "Couleur de l'eau (hex)", secondary: "Entité secondaire (ex. intensité)", language: "Langue", auto: "Auto",
-    unavailable: "Indisponible" },
-  de: { entity: "Regensensor", name: "Name", label: "Untertitel", max: "Skala (Maximalwert)", decimals: "Dezimalstellen",
+    unavailable: "Indisponible", bracket: "Afficher le collier de fixation",
+    notCumul: "Ce capteur ne semble pas être un cumul journalier.", createBtn: "Créer le capteur de cumul journalier",
+    creating: "Création…", created: "Créé et sélectionné : ", createError: "Échec de la création : ",
+    dailySuffix: "cumul du jour", totalSuffix: "total" },
+  de: { entity: "Regensensor", name: "Name", label: "Untertitel", max: "Tagesmaximum Niederschlag (volle Skala)", decimals: "Dezimalstellen",
     color: "Wasserfarbe (Hex)", secondary: "Sekundäre Entität (z. B. Regenrate)", language: "Sprache", auto: "Auto",
-    unavailable: "Nicht verfügbar" },
-  es: { entity: "Sensor de lluvia", name: "Nombre", label: "Subtítulo", max: "Escala (valor máximo)", decimals: "Decimales",
+    unavailable: "Nicht verfügbar", bracket: "Halterung anzeigen",
+    notCumul: "Dieser Sensor scheint keine Tagessumme zu sein.", createBtn: "Tagessummen-Sensor erstellen",
+    creating: "Wird erstellt…", created: "Erstellt und ausgewählt: ", createError: "Fehlgeschlagen: ",
+    dailySuffix: "Tagessumme", totalSuffix: "gesamt" },
+  es: { entity: "Sensor de lluvia", name: "Nombre", label: "Subtítulo", max: "Máximo diario de precipitación (escala completa)", decimals: "Decimales",
     color: "Color del agua (hex)", secondary: "Entidad secundaria (p. ej. intensidad)", language: "Idioma", auto: "Auto",
-    unavailable: "No disponible" },
-  it: { entity: "Sensore pioggia", name: "Nome", label: "Sottotitolo", max: "Scala (valore massimo)", decimals: "Decimali",
+    unavailable: "No disponible", bracket: "Mostrar el soporte",
+    notCumul: "Este sensor no parece un total diario.", createBtn: "Crear el sensor de total diario",
+    creating: "Creando…", created: "Creado y seleccionado: ", createError: "Error al crear: ",
+    dailySuffix: "total diario", totalSuffix: "total" },
+  it: { entity: "Sensore pioggia", name: "Nome", label: "Sottotitolo", max: "Massimo giornaliero di pioggia (scala piena)", decimals: "Decimali",
     color: "Colore dell'acqua (hex)", secondary: "Entità secondaria (es. intensità)", language: "Lingua", auto: "Auto",
-    unavailable: "Non disponibile" },
-  nl: { entity: "Regensensor", name: "Naam", label: "Ondertitel", max: "Schaal (maximumwaarde)", decimals: "Decimalen",
+    unavailable: "Non disponibile", bracket: "Mostra la staffa",
+    notCumul: "Questo sensore non sembra un totale giornaliero.", createBtn: "Crea il sensore del totale giornaliero",
+    creating: "Creazione…", created: "Creato e selezionato: ", createError: "Creazione fallita: ",
+    dailySuffix: "totale giornaliero", totalSuffix: "totale" },
+  nl: { entity: "Regensensor", name: "Naam", label: "Ondertitel", max: "Dagelijks neerslagmaximum (volle schaal)", decimals: "Decimalen",
     color: "Waterkleur (hex)", secondary: "Secundaire entiteit (bijv. regenintensiteit)", language: "Taal", auto: "Auto",
-    unavailable: "Niet beschikbaar" },
+    unavailable: "Niet beschikbaar", bracket: "Beugel tonen",
+    notCumul: "Deze sensor lijkt geen dagtotaal te zijn.", createBtn: "Dagtotaal-sensor aanmaken",
+    creating: "Aanmaken…", created: "Aangemaakt en geselecteerd: ", createError: "Aanmaken mislukt: ",
+    dailySuffix: "dagtotaal", totalSuffix: "totaal" },
 };
+
+function pvSlugify(s) {
+  return String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+}
 
 function pvLangCode(hass, config) {
   const l = (config && config.language) || (hass && (hass.locale ? hass.locale.language : hass.language)) || "en";
@@ -119,8 +142,8 @@ class PluviometerCard extends HTMLElement {
         .pv-glass { fill: rgba(150, 185, 178, 0.14); stroke: var(--pv-outline-color, #7f9494); stroke-width: 2.5; }
         .pv-glass-inner { fill: rgba(150, 185, 178, 0.10); stroke: var(--pv-outline-color, #7f9494); stroke-width: 1; opacity: 0.6; }
         .pv-water { transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
-        .pv-bracket { fill: var(--pv-bracket-color, #2e2e2e); }
-        .pv-bracket-edge { fill: var(--pv-bracket-color, #2e2e2e); stroke: var(--pv-bracket-edge-color, #4a4a4a); stroke-width: 1; }
+        .pv-bracket { fill: var(--pv-bracket-color, #3a3a3a); opacity: 0.4; }
+        .pv-bracket-edge { fill: var(--pv-bracket-color, #3a3a3a); opacity: 0.4; stroke: var(--pv-bracket-edge-color, #4a4a4a); stroke-width: 1; }
         .pv-tick { stroke: var(--secondary-text-color); stroke-width: 1; opacity: 0.55; }
         .pv-tick-major { stroke-width: 1.6; opacity: 0.8; }
         .pv-tick-label { font-size: 9.5px; fill: var(--secondary-text-color); font-family: inherit; }
@@ -145,10 +168,11 @@ class PluviometerCard extends HTMLElement {
           <ellipse class="pv-glass-inner" cx="75" cy="17" rx="37" ry="6.5"/>
           <path class="pv-glass" d="M58 84 L62.5 253 Q62.7 258 68 258 L82 258 Q87.3 258 87.5 253 L92 84 Z" fill="none"/>
           <line x1="58" y1="84" x2="92" y2="84" stroke="var(--pv-outline-color, #7f9494)" stroke-width="2"/>
-          <g id="pv-ticks">${this._ticks()}</g>
+          ${c.show_bracket === false ? "" : `
           <rect class="pv-bracket-edge" x="50" y="138" width="50" height="17" rx="3"/>
           <rect class="pv-bracket" x="97" y="142" width="10" height="9"/>
-          <path class="pv-bracket-edge" d="M107 140 Q124 132 130 130 L130 163 Q124 161 107 153 Z"/>
+          <path class="pv-bracket-edge" d="M107 140 Q124 132 130 130 L130 163 Q124 161 107 153 Z"/>`}
+          <g id="pv-ticks">${this._ticks()}</g>
         </svg>
         </div>
         <div class="pv-info">
@@ -247,6 +271,7 @@ class PluviometerCardEditor extends HTMLElement {
         if (v.max_level != null && v.max_level !== "" && parseFloat(v.max_level) !== 40) out.max_level = parseFloat(v.max_level);
         if (v.decimals != null && v.decimals !== "" && parseInt(v.decimals, 10) !== 1) out.decimals = parseInt(v.decimals, 10);
         if (v.water_color && v.water_color !== "#3d9bd9") out.water_color = v.water_color;
+        if (v.show_bracket === false) out.show_bracket = false;
         if (v.secondary_entity) out.secondary_entity = v.secondary_entity;
         if (v.language) out.language = v.language;
         this._config = out;
@@ -264,6 +289,7 @@ class PluviometerCardEditor extends HTMLElement {
       max_level: c.max_level != null ? c.max_level : 40,
       decimals: c.decimals != null ? c.decimals : 1,
       water_color: c.water_color || "#3d9bd9",
+      show_bracket: c.show_bracket !== false,
       secondary_entity: c.secondary_entity || "",
       language: c.language || "",
     };
@@ -274,9 +300,89 @@ class PluviometerCardEditor extends HTMLElement {
       { name: "max_level", label: t.max, selector: { number: { mode: "box", step: "any", min: 0 } } },
       { name: "decimals", label: t.decimals, selector: { number: { mode: "box", step: 1, min: 0, max: 3 } } },
       { name: "water_color", label: t.color, selector: { text: {} } },
+      { name: "show_bracket", label: t.bracket, selector: { boolean: {} } },
       { name: "secondary_entity", label: t.secondary, selector: { entity: { domain: "sensor" } } },
       { name: "language", label: t.language, selector: { select: { mode: "dropdown", options: [{ value: "", label: t.auto }].concat(Object.keys(PV_LANGNAMES).map((l) => ({ value: l, label: PV_LANGNAMES[l] }))) } } },
     ];
+    this._renderHelperBox(t);
+  }
+
+  _renderHelperBox(t) {
+    if (!this._helperBox) {
+      this._helperBox = document.createElement("div");
+      this._helperBox.style.cssText = "margin-top:12px;padding:12px 14px;border:1px solid var(--divider-color);border-radius:8px;font-size:0.9em;color:var(--secondary-text-color);";
+      this.appendChild(this._helperBox);
+    }
+    const c = this._config;
+    const st = c.entity && this._hass.states[c.entity];
+    const status = this._helperStatus;
+    const needs = st && st.attributes.state_class !== "total_increasing";
+    if (!needs && !status) { this._helperBox.hidden = true; return; }
+    this._helperBox.hidden = false;
+    let html = "";
+    if (needs && !(status && status.ok)) html += `<div style="margin-bottom:8px;">💧 ${t.notCumul}</div>`;
+    if (status) {
+      html += `<div style="margin-bottom:8px;${status.ok ? "color:var(--success-color, #0f9d58);" : status.busy ? "" : "color:var(--error-color, #db4437);"}">${status.msg}</div>`;
+    }
+    if (needs && !(status && (status.busy || status.ok))) {
+      html += `<button id="pv-create-daily" style="cursor:pointer;padding:8px 14px;border:none;border-radius:6px;background:var(--primary-color);color:var(--text-primary-color, #fff);font:inherit;">${t.createBtn}</button>`;
+    }
+    this._helperBox.innerHTML = html;
+    const btn = this._helperBox.querySelector("#pv-create-daily");
+    if (btn) btn.addEventListener("click", () => this._createDaily());
+  }
+
+  async _createDaily() {
+    const c = this._config;
+    const t = pvT(this._hass, c);
+    const st = this._hass.states[c.entity];
+    const base = (st && st.attributes.friendly_name) || c.entity.split(".")[1];
+    this._helperStatus = { busy: true, msg: t.creating };
+    this._renderHelperBox(t);
+    try {
+      let source = c.entity;
+      const unit = (st && st.attributes.unit_of_measurement) || "";
+      if (/\/h$/i.test(unit)) {
+        const nameTotal = base + " " + t.totalSuffix;
+        await this._flowCreate("integration", {
+          name: nameTotal, source: source, method: "left", round: 2, unit_prefix: "none", unit_time: "h",
+        });
+        source = "sensor." + pvSlugify(nameTotal);
+        await new Promise((r) => setTimeout(r, 2500));
+      }
+      const nameDaily = base + " " + t.dailySuffix;
+      await this._flowCreate("utility_meter", {
+        name: nameDaily, source: source, cycle: "daily", offset: 0,
+        net_consumption: false, delta_values: false, periodically_resetting: true, tariffs: [],
+      });
+      const newId = "sensor." + pvSlugify(nameDaily);
+      this._helperStatus = { busy: false, ok: true, msg: t.created + newId };
+      this._config = { ...this._config, entity: newId };
+      this._render();
+      this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: this._config }, bubbles: true, composed: true }));
+    } catch (e) {
+      this._helperStatus = { busy: false, msg: t.createError + (e && e.message ? e.message : e) };
+      this._renderHelperBox(t);
+    }
+  }
+
+  async _flowCreate(handler, values) {
+    const flow = await this._hass.callApi("POST", "config/config_entries/flow", {
+      handler: handler, show_advanced_options: true,
+    });
+    const data = {};
+    for (const f of flow.data_schema || []) {
+      if (values[f.name] !== undefined) data[f.name] = values[f.name];
+      else if (f.default !== undefined) data[f.name] = f.default;
+    }
+    const res = await this._hass.callApi("POST", "config/config_entries/flow/" + flow.flow_id, data);
+    if (res.type === "form" && res.errors && Object.keys(res.errors).length) {
+      throw new Error(handler + ": " + JSON.stringify(res.errors));
+    }
+    if (res.type !== "create_entry") {
+      throw new Error(handler + ": unexpected flow step (" + (res.step_id || res.type) + ")");
+    }
+    return res;
   }
 }
 
