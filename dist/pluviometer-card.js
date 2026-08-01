@@ -1,4 +1,4 @@
-const CARD_VERSION = "0.3.4";
+const CARD_VERSION = "0.3.5";
 
 console.info(
   "%c PLUVIOMETER-CARD %c v" + CARD_VERSION + " ",
@@ -586,7 +586,16 @@ class PluviometerCardEditor extends HTMLElement {
     this._config = { ...config };
     this._render();
   }
-  set hass(hass) { this._hass = hass; this._render(); }
+
+  // Render on the first hass and on config changes only. Home Assistant pushes a new hass
+  // on every state change, and _render() rewrites the helper box innerHTML, which detached
+  // the "create the daily total" button between mousedown and mouseup and swallowed the click.
+  set hass(hass) {
+    const first = !this._hass;
+    this._hass = hass;
+    if (this._form) this._form.hass = hass;
+    if (first) this._render();
+  }
 
   _render() {
     if (!this._hass || !this._config) return;
