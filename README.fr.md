@@ -1,6 +1,6 @@
 # Pluviometer Card
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-blue.svg)](https://github.com/hacs/default)
 [![GitHub Release](https://img.shields.io/github/v/release/ADNPolymerase/ha-pluviometer-card?sort=semver)](https://github.com/ADNPolymerase/ha-pluviometer-card/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ADNPolymerase/ha-pluviometer-card/blob/main/LICENSE)
 
@@ -27,9 +27,10 @@ capteur de précipitations (Netatmo, intégrations météo, DIY…), en mm ou en
 
 ## Installation (HACS)
 
-1. HACS → trois points → **Dépôts personnalisés**
-2. Ajouter `https://github.com/ADNPolymerase/ha-pluviometer-card` avec la catégorie **Dashboard**
-3. Installer **Pluviometer Card**, puis rafraîchir le navigateur (Ctrl+Shift+R / Cmd+Shift+R)
+Disponible directement dans HACS — aucun dépôt personnalisé à ajouter.
+
+1. Ouvrir **HACS**, rechercher **Pluviometer Card** et l'installer
+2. Rafraîchir le navigateur (Ctrl+Shift+R / Cmd+Shift+R)
 
 Alternative manuelle : copier `pluviometer-card.js` depuis la [dernière release](https://github.com/ADNPolymerase/ha-pluviometer-card/releases) vers `config/www/`, puis ajouter `/local/pluviometer-card.js` comme ressource JavaScript-module.
 
