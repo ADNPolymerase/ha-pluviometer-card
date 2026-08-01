@@ -1,4 +1,4 @@
-const CARD_VERSION = "0.3.1";
+const CARD_VERSION = "0.3.2";
 
 console.info(
   "%c PLUVIOMETER-CARD %c v" + CARD_VERSION + " ",
@@ -674,8 +674,8 @@ class PluviometerCardEditor extends HTMLElement {
   _renderHelperBox(t) {
     if (!this._helperBox) {
       this._helperBox = document.createElement("div");
-      this._helperBox.style.cssText = "margin-top:12px;padding:12px 14px;border:1px solid var(--divider-color);border-radius:8px;font-size:0.9em;color:var(--secondary-text-color);";
-      this.appendChild(this._helperBox);
+      this._helperBox.style.cssText = "margin-bottom:12px;padding:12px 14px;border:1px solid var(--divider-color);border-radius:8px;font-size:0.9em;color:var(--secondary-text-color);";
+      this.insertBefore(this._helperBox, this._form || null);
     }
     const c = this._config;
     const st = c.entity && this._hass.states[c.entity];
