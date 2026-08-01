@@ -21,6 +21,9 @@ capteur de précipitations (Netatmo, intégrations météo, DIY…), en mm ou en
 - **Tracé 24 h dépliable** : avec `show_history`, la card gagne un bouton discret qui déroule un graphique en barres par heure (ou demi-heure) des dernières 24 h, dans la couleur de l'eau, via l'API history de HA. L'échelle est un multiple de 5 : minimum 5, arrondie au 5 supérieur de la plus grosse barre.
 - **Batterie et connectivité** dans les coins de la card : entité batterie (icône à niveau coloré, pourcentage, ou les deux) et entité connectivité (icône wifi, barrée en rouge si déconnecté).
 - **Easter egg débordement** : quand le cumul du jour dépasse `max_level`, l'entonnoir se remplit, des gouttes s'envolent et s'écrasent sur le titre de la card et dans une flaque cartoon qui s'étale sous le pluviomètre.
+
+![Débordement](https://raw.githubusercontent.com/ADNPolymerase/ha-pluviometer-card/main/docs/overflow.png)
+
 - **Couleur du pluviomètre** : transparent, vert bouteille, ambré ou fumé (`glass_color`) — ou toute couleur libre en YAML.
 - Unité lue sur l'entité (mm, in…), décimales et couleur de l'eau configurables.
 - Sous-titre optionnel (ex. « aujourd'hui ») et entité secondaire (ex. intensité mm/h).
