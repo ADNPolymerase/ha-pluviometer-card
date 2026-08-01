@@ -40,6 +40,8 @@ Available directly in HACS — no custom repository needed.
 1. Open **HACS**, search for **Pluviometer Card** and install it
 2. Hard-refresh your browser (Ctrl+Shift+R / Cmd+Shift+R)
 
+As a custom repository: HACS → three dots → **Custom repositories** → add `https://github.com/ADNPolymerase/ha-pluviometer-card` with category **Dashboard**.
+
 Manual alternative: copy `pluviometer-card.js` from the [latest release](https://github.com/ADNPolymerase/ha-pluviometer-card/releases) to `config/www/`, then add `/local/pluviometer-card.js` as a JavaScript-module resource.
 
 ## Usage
