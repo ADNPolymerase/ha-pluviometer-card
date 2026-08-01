@@ -1,4 +1,4 @@
-const CARD_VERSION = "0.3.2";
+const CARD_VERSION = "0.3.3";
 
 console.info(
   "%c PLUVIOMETER-CARD %c v" + CARD_VERSION + " ",
@@ -706,20 +706,22 @@ class PluviometerCardEditor extends HTMLElement {
     try {
       let source = c.entity;
       const unit = (st && st.attributes.unit_of_measurement) || "";
-      if (/\/h$/i.test(unit)) {
+      const stateClass = (st && st.attributes.state_class) || "";
+      const isRate = /\/\s*h$/i.test(unit);
+      if (isRate) {
         const nameTotal = base + " " + t.totalSuffix;
-        await this._flowCreate("integration", {
+        const entryId = await this._flowCreate("integration", {
           name: nameTotal, source: source, method: "left", round: 2, unit_prefix: "none", unit_time: "h",
         });
-        source = "sensor." + pvSlugify(nameTotal);
-        await new Promise((r) => setTimeout(r, 2500));
+        source = (await this._entityFromEntry(entryId)) || "sensor." + pvSlugify(nameTotal);
       }
       const nameDaily = base + " " + t.dailySuffix;
-      await this._flowCreate("utility_meter", {
-        name: nameDaily, source: source, cycle: "daily", offset: 0,
-        net_consumption: false, delta_values: false, periodically_resetting: true, tariffs: [],
+      const entryId = await this._flowCreate("utility_meter", {
+        name: nameDaily, source: source, cycle: "daily", offset: 0, net_consumption: false,
+        delta_values: !isRate && stateClass !== "total" && stateClass !== "total_increasing",
+        periodically_resetting: true, tariffs: [],
       });
-      const newId = "sensor." + pvSlugify(nameDaily);
+      const newId = (await this._entityFromEntry(entryId)) || "sensor." + pvSlugify(nameDaily);
       this._helperStatus = { busy: false, ok: true, msg: t.created + newId };
       this._config = { ...this._config, entity: newId };
       this._render();
@@ -728,6 +730,19 @@ class PluviometerCardEditor extends HTMLElement {
       this._helperStatus = { busy: false, msg: t.createError + (e && e.message ? e.message : e) };
       this._renderHelperBox(t);
     }
+  }
+
+  async _entityFromEntry(entryId) {
+    if (!entryId || !this._hass.callWS) return null;
+    for (let i = 0; i < 12; i++) {
+      try {
+        const list = await this._hass.callWS({ type: "config/entity_registry/list" });
+        const hit = (list || []).find((e) => e.config_entry_id === entryId && e.entity_id.startsWith("sensor."));
+        if (hit) return hit.entity_id;
+      } catch (e) { return null; }
+      await new Promise((r) => setTimeout(r, 500));
+    }
+    return null;
   }
 
   async _flowCreate(handler, values) {
@@ -746,7 +761,8 @@ class PluviometerCardEditor extends HTMLElement {
     if (res.type !== "create_entry") {
       throw new Error(handler + ": unexpected flow step (" + (res.step_id || res.type) + ")");
     }
-    return res;
+    const r = res.result;
+    return r && typeof r === "object" ? r.entry_id : r;
   }
 }
 
