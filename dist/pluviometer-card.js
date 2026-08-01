@@ -1,4 +1,4 @@
-const CARD_VERSION = "0.3.3";
+const CARD_VERSION = "0.3.4";
 
 console.info(
   "%c PLUVIOMETER-CARD %c v" + CARD_VERSION + " ",
@@ -190,6 +190,7 @@ class PluviometerCard extends HTMLElement {
     card.innerHTML = `
       <style>
         .pv-wrap { display: flex; align-items: center; gap: 4px; padding: 12px 16px; cursor: pointer; }
+        .pv-wrap.pv-has-corners { padding-top: 32px; }
         .pv-gauge { flex: none; width: 118px; position: relative; z-index: 1; }
         .pv-gauge svg { display: block; width: 100%; height: auto; overflow: visible; }
         .pv-info { flex: 1; min-width: 0; padding-left: 4px; }
@@ -569,6 +570,7 @@ class PluviometerCard extends HTMLElement {
     } else {
       batt.hidden = true;
     }
+    this._el["pv-wrap"].classList.toggle("pv-has-corners", !conn.hidden || !batt.hidden);
   }
 
   _setLevel(frac) {
@@ -638,8 +640,9 @@ class PluviometerCardEditor extends HTMLElement {
       connectivity_entity: c.connectivity_entity || "",
       language: c.language || "",
     };
+    const RAIN = { filter: [{ domain: "sensor", device_class: "precipitation" }, { domain: "sensor", device_class: "precipitation_intensity" }] };
     this._form.schema = [
-      { name: "entity", label: t.entity, selector: { entity: { domain: "sensor" } } },
+      { name: "entity", label: t.entity, selector: { entity: RAIN } },
       { name: "name", label: t.name, selector: { text: {} } },
       { name: "label", label: t.label, selector: { text: {} } },
       { name: "max_level", label: t.max, selector: { number: { mode: "box", step: "any", min: 0 } } },
@@ -657,15 +660,15 @@ class PluviometerCardEditor extends HTMLElement {
         { value: "amber", label: t.glassAmber },
         { value: "smoked", label: t.glassSmoked },
       ] } } },
-      { name: "secondary_entity", label: t.secondary, selector: { entity: { domain: "sensor" } } },
+      { name: "secondary_entity", label: t.secondary, selector: { entity: RAIN } },
       { name: "secondary_name", label: t.secName, selector: { text: {} } },
-      { name: "battery_entity", label: t.battOpt, selector: { entity: { domain: "sensor" } } },
+      { name: "battery_entity", label: t.battOpt, selector: { entity: { filter: [{ domain: "sensor", device_class: "battery" }] } } },
       { name: "battery_display", label: t.battDisp, selector: { select: { mode: "dropdown", options: [
         { value: "both", label: t.battBoth },
         { value: "icon", label: t.battIcon },
         { value: "percent", label: t.battPct },
       ] } } },
-      { name: "connectivity_entity", label: t.connOpt, selector: { entity: { domain: ["binary_sensor", "sensor"] } } },
+      { name: "connectivity_entity", label: t.connOpt, selector: { entity: { filter: [{ domain: "binary_sensor", device_class: "connectivity" }] } } },
       { name: "language", label: t.language, selector: { select: { mode: "dropdown", options: [{ value: "", label: t.auto }].concat(Object.keys(PV_LANGNAMES).map((l) => ({ value: l, label: PV_LANGNAMES[l] }))) } } },
     ];
     this._renderHelperBox(t);

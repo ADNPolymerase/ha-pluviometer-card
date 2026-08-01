@@ -31,7 +31,7 @@ bracket — and fills it with water as the rain falls. Works with any precipitat
 - **Gauge color**: clear, bottle green, amber or smoked glass (`glass_color`) — or any custom color in YAML.
 - Unit read from the entity (mm, in…), configurable decimals and water color.
 - Optional subtitle (e.g. "today") and secondary entity (e.g. rain rate mm/h).
-- Native HA editor (entity picker) + full YAML control. Tap opens more-info.
+- Native HA editor with entity pickers filtered to what makes sense (rain, battery, connectivity device classes) + full YAML control, which accepts any entity. Tap opens more-info.
 
 ## Installation (HACS)
 

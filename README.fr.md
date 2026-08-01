@@ -23,7 +23,7 @@ capteur de précipitations (Netatmo, intégrations météo, DIY…), en mm ou en
 - **Couleur du pluviomètre** : transparent, vert bouteille, ambré ou fumé (`glass_color`) — ou toute couleur libre en YAML.
 - Unité lue sur l'entité (mm, in…), décimales et couleur de l'eau configurables.
 - Sous-titre optionnel (ex. « aujourd'hui ») et entité secondaire (ex. intensité mm/h).
-- Éditeur natif HA (sélecteur d'entité) + YAML complet. Un tap ouvre le more-info.
+- Éditeur natif HA avec des sélecteurs filtrés sur les entités pertinentes (device_class pluie, batterie, connectivité) + YAML complet, qui accepte n'importe quelle entité. Un tap ouvre le more-info.
 
 ## Installation (HACS)
 
