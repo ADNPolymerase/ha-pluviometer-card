@@ -20,6 +20,7 @@ capteur de précipitations (Netatmo, intégrations météo, DIY…), en mm ou en
 - **Pas de capteur de cumul journalier ? Un clic suffit** : si le capteur choisi n'est pas un cumul, l'éditeur propose un bouton qui crée les helpers nécessaires (compteur `utility_meter` à cycle journalier — précédé d'un capteur `integration` si la source est une intensité en mm/h).
 - **Tracé 24 h dépliable** : avec `show_history`, la card gagne un bouton discret qui déroule un graphique en barres par heure (ou demi-heure) des dernières 24 h, dans la couleur de l'eau, via l'API history de HA. L'échelle est un multiple de 5 : minimum 5, arrondie au 5 supérieur de la plus grosse barre.
 - **Batterie et connectivité** dans les coins de la card : entité batterie (icône à niveau coloré, pourcentage, ou les deux) et entité connectivité (icône wifi, barrée en rouge si déconnecté).
+- **Batterie dans n'importe quel format** : pourcentage par défaut, ou `battery_type: other` pour les capteurs qui remontent autre chose, comme la tension de la pile sur un Ecowitt WH40. La valeur est alors affichée avec son unité, et renseigner `battery_min` / `battery_max` la retransforme en vraie jauge de niveau.
 - **Couleur du pluviomètre** : transparent, vert bouteille, ambré ou fumé (`glass_color`) — ou toute couleur libre en YAML.
 - Unité lue sur l'entité (mm, in…), décimales et couleur de l'eau configurables.
 - Sous-titre optionnel (ex. « aujourd'hui ») et entité secondaire (ex. intensité mm/h).
@@ -64,6 +65,9 @@ secondary_entity: sensor.pluviometre_precipitation   # optionnel, ex. intensité
 | `secondary_name` | friendly name | Nom affiché de l'entité secondaire |
 | `battery_entity` | — | Capteur batterie affiché en haut à droite |
 | `battery_display` | `both` | `icon`, `percent` ou `both` |
+| `battery_type` | `percent` | `percent`, ou `other` si le capteur n'est pas un pourcentage |
+| `battery_min` | — | Valeur correspondant à vide, dans l'unité du capteur (`other`) |
+| `battery_max` | — | Valeur correspondant à plein, dans l'unité du capteur (`other`) |
 | `connectivity_entity` | — | Capteur de connectivité affiché en haut à gauche |
 | `unit` | unité de l'entité | Forçage de l'unité |
 | `secondary_entity` | — | Capteur supplémentaire affiché sous la valeur |

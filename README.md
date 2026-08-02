@@ -28,6 +28,7 @@ bracket — and fills it with water as the rain falls. Works with any precipitat
 - **No daily total sensor? One click fixes it**: if the selected sensor isn't a daily cumulative, the editor offers a button that creates the needed helpers for you (a daily utility meter — plus an integration sensor first when your source is a rate in mm/h).
 - **Collapsible 24 h history**: enable `show_history` and the card gets a discreet button that expands a 24 h chart of hourly (or half-hourly) rain bars, drawn with the water color from the HA history API. The y-scale is a multiple of 5: minimum 5, rounded up to the next 5 above the biggest bar.
 - **Battery and connectivity** in the card corners: pick a battery entity (icon with colored level, percentage, or both) and a connectivity entity (wifi icon, red and crossed when offline).
+- **Battery in any format**: percentage by default, or switch `battery_type` to `other` for sensors that report something else, such as the cell voltage on an Ecowitt WH40. The reading is then shown with its own unit, and giving `battery_min` / `battery_max` turns it back into a proper level gauge.
 - **Gauge color**: clear, bottle green, amber or smoked glass (`glass_color`) — or any custom color in YAML.
 - Unit read from the entity (mm, in…), configurable decimals and water color.
 - Optional subtitle (e.g. "today") and secondary entity (e.g. rain rate mm/h).
@@ -75,6 +76,9 @@ secondary_entity: sensor.rain_gauge_precipitation   # optional, e.g. rain rate
 | `secondary_name` | friendly name | Display name for the secondary entity |
 | `battery_entity` | — | Battery sensor shown top-right |
 | `battery_display` | `both` | `icon`, `percent` or `both` |
+| `battery_type` | `percent` | `percent`, or `other` for a sensor that is not a percentage |
+| `battery_min` | — | Value meaning empty, in the sensor's unit (`other` only) |
+| `battery_max` | — | Value meaning full, in the sensor's unit (`other` only) |
 | `connectivity_entity` | — | Connectivity sensor shown top-left |
 | `unit` | entity unit | Unit override |
 | `secondary_entity` | — | Extra sensor shown under the value |
