@@ -31,7 +31,7 @@ bracket — and fills it with water as the rain falls. Works with any precipitat
 - **Battery in any format**: percentage by default, or switch `battery_type` to `other` for sensors that report something else, such as the cell voltage on an Ecowitt WH40. The reading is then shown with its own unit, and giving `battery_min` / `battery_max` turns it back into a proper level gauge.
 - **Gauge color**: clear, bottle green, amber or smoked glass (`glass_color`) — or any custom color in YAML.
 - Unit read from the entity (mm, in…), configurable decimals and water color.
-- Optional subtitle (e.g. "today") and secondary entity (e.g. rain rate mm/h).
+- Optional subtitle (e.g. "today") and secondary entity (e.g. rain rate mm/h), with its own display name and unit: show a sensor that reports mm as `mm/h` without touching the entity itself.
 - Native HA editor with entity pickers filtered to what makes sense (rain, battery, connectivity device classes) + full YAML control, which accepts any entity. Tap opens more-info.
 
 ## Installation (HACS)
@@ -80,7 +80,8 @@ secondary_entity: sensor.rain_gauge_precipitation   # optional, e.g. rain rate
 | `battery_min` | — | Value meaning empty, in the sensor's unit (`other` only) |
 | `battery_max` | — | Value meaning full, in the sensor's unit (`other` only) |
 | `connectivity_entity` | — | Connectivity sensor shown top-left |
-| `unit` | entity unit | Unit override |
+| `unit` | entity unit | Displayed unit, overrides the entity's |
+| `secondary_unit` | entity unit | Displayed unit for the secondary entity |
 | `secondary_entity` | — | Extra sensor shown under the value |
 | `language` | auto | `en`, `fr`, `de`, `es`, `it`, `nl` |
 

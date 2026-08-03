@@ -1,4 +1,4 @@
-const CARD_VERSION = "0.4.0";
+const CARD_VERSION = "0.4.1";
 
 console.info(
   "%c PLUVIOMETER-CARD %c v" + CARD_VERSION + " ",
@@ -22,7 +22,8 @@ const PV_T = {
     battOpt: "Battery entity", battDisp: "Battery display", battIcon: "Icon", battPct: "Percentage", battBoth: "Both",
     connOpt: "Connectivity entity",
     battMin: "Battery empty at (same unit as the sensor)", battMax: "Battery full at",
-    battType: "Battery format", battTypePct: "Percentage (standard)", battTypeOther: "Other unit (voltage…)" },
+    battType: "Battery format", battTypePct: "Percentage (standard)", battTypeOther: "Other unit (voltage…)",
+    unitOpt: "Displayed unit (overrides the entity)", secUnit: "Secondary entity displayed unit" },
   fr: { entity: "Capteur de pluie", name: "Nom", label: "Sous-titre", max: "Maximum de précipitations par jour (jauge pleine)", decimals: "Décimales",
     color: "Couleur de l'eau (hex)", secondary: "Entité secondaire (ex. intensité)", language: "Langue", auto: "Auto",
     unavailable: "Indisponible", bracket: "Afficher le collier de fixation",
@@ -36,7 +37,8 @@ const PV_T = {
     battOpt: "Entité batterie", battDisp: "Affichage batterie", battIcon: "Icône", battPct: "Pourcentage", battBoth: "Les deux",
     connOpt: "Entité connectivité",
     battMin: "Batterie vide à (unité du capteur)", battMax: "Batterie pleine à",
-    battType: "Format de la batterie", battTypePct: "Pourcentage (classique)", battTypeOther: "Autre unité (tension…)" },
+    battType: "Format de la batterie", battTypePct: "Pourcentage (classique)", battTypeOther: "Autre unité (tension…)",
+    unitOpt: "Unité affichée (remplace celle de l'entité)", secUnit: "Unité affichée de l'entité secondaire" },
   de: { entity: "Regensensor", name: "Name", label: "Untertitel", max: "Tagesmaximum Niederschlag (volle Skala)", decimals: "Dezimalstellen",
     color: "Wasserfarbe (Hex)", secondary: "Sekundäre Entität (z. B. Regenrate)", language: "Sprache", auto: "Auto",
     unavailable: "Nicht verfügbar", bracket: "Halterung anzeigen",
@@ -50,7 +52,8 @@ const PV_T = {
     battOpt: "Batterie-Entität", battDisp: "Batterieanzeige", battIcon: "Symbol", battPct: "Prozent", battBoth: "Beides",
     connOpt: "Konnektivitäts-Entität",
     battMin: "Batterie leer bei (Einheit des Sensors)", battMax: "Batterie voll bei",
-    battType: "Batterieformat", battTypePct: "Prozent (Standard)", battTypeOther: "Andere Einheit (Spannung…)" },
+    battType: "Batterieformat", battTypePct: "Prozent (Standard)", battTypeOther: "Andere Einheit (Spannung…)",
+    unitOpt: "Angezeigte Einheit (überschreibt die Entität)", secUnit: "Angezeigte Einheit der sekundären Entität" },
   es: { entity: "Sensor de lluvia", name: "Nombre", label: "Subtítulo", max: "Máximo diario de precipitación (escala completa)", decimals: "Decimales",
     color: "Color del agua (hex)", secondary: "Entidad secundaria (p. ej. intensidad)", language: "Idioma", auto: "Auto",
     unavailable: "No disponible", bracket: "Mostrar el soporte",
@@ -64,7 +67,8 @@ const PV_T = {
     battOpt: "Entidad de batería", battDisp: "Visualización de batería", battIcon: "Icono", battPct: "Porcentaje", battBoth: "Ambos",
     connOpt: "Entidad de conectividad",
     battMin: "Batería vacía a (unidad del sensor)", battMax: "Batería llena a",
-    battType: "Formato de la batería", battTypePct: "Porcentaje (estándar)", battTypeOther: "Otra unidad (voltaje…)" },
+    battType: "Formato de la batería", battTypePct: "Porcentaje (estándar)", battTypeOther: "Otra unidad (voltaje…)",
+    unitOpt: "Unidad mostrada (reemplaza la de la entidad)", secUnit: "Unidad mostrada de la entidad secundaria" },
   it: { entity: "Sensore pioggia", name: "Nome", label: "Sottotitolo", max: "Massimo giornaliero di pioggia (scala piena)", decimals: "Decimali",
     color: "Colore dell'acqua (hex)", secondary: "Entità secondaria (es. intensità)", language: "Lingua", auto: "Auto",
     unavailable: "Non disponibile", bracket: "Mostra la staffa",
@@ -78,7 +82,8 @@ const PV_T = {
     battOpt: "Entità batteria", battDisp: "Visualizzazione batteria", battIcon: "Icona", battPct: "Percentuale", battBoth: "Entrambi",
     connOpt: "Entità connettività",
     battMin: "Batteria scarica a (unità del sensore)", battMax: "Batteria carica a",
-    battType: "Formato della batteria", battTypePct: "Percentuale (standard)", battTypeOther: "Altra unità (tensione…)" },
+    battType: "Formato della batteria", battTypePct: "Percentuale (standard)", battTypeOther: "Altra unità (tensione…)",
+    unitOpt: "Unità visualizzata (sostituisce quella dell'entità)", secUnit: "Unità visualizzata dell'entità secondaria" },
   nl: { entity: "Regensensor", name: "Naam", label: "Ondertitel", max: "Dagelijks neerslagmaximum (volle schaal)", decimals: "Decimalen",
     color: "Waterkleur (hex)", secondary: "Secundaire entiteit (bijv. regenintensiteit)", language: "Taal", auto: "Auto",
     unavailable: "Niet beschikbaar", bracket: "Beugel tonen",
@@ -92,7 +97,8 @@ const PV_T = {
     battOpt: "Batterij-entiteit", battDisp: "Batterijweergave", battIcon: "Pictogram", battPct: "Percentage", battBoth: "Beide",
     connOpt: "Connectiviteits-entiteit",
     battMin: "Batterij leeg bij (eenheid van de sensor)", battMax: "Batterij vol bij",
-    battType: "Batterijformaat", battTypePct: "Percentage (standaard)", battTypeOther: "Andere eenheid (spanning…)" },
+    battType: "Batterijformaat", battTypePct: "Percentage (standaard)", battTypeOther: "Andere eenheid (spanning…)",
+    unitOpt: "Weergegeven eenheid (overschrijft die van de entiteit)", secUnit: "Weergegeven eenheid secundaire entiteit" },
 };
 
 function pvSlugify(s) {
@@ -539,7 +545,7 @@ class PluviometerCard extends HTMLElement {
     const sec = this._el["pv-secondary"];
     if (c.secondary_entity && this._hass.states[c.secondary_entity]) {
       const s2 = this._hass.states[c.secondary_entity];
-      const u2 = s2.attributes.unit_of_measurement || "";
+      const u2 = c.secondary_unit || s2.attributes.unit_of_measurement || "";
       const n2 = parseFloat(s2.state);
       sec.hidden = false;
       sec.textContent = (c.secondary_name || s2.attributes.friendly_name || c.secondary_entity) + " : " +
@@ -642,6 +648,8 @@ class PluviometerCardEditor extends HTMLElement {
         if (v.history_bucket && v.history_bucket !== "hour") out.history_bucket = v.history_bucket;
         if (v.glass_color && v.glass_color !== "clear") out.glass_color = v.glass_color;
         if (v.secondary_name) out.secondary_name = v.secondary_name;
+        if (v.secondary_unit) out.secondary_unit = v.secondary_unit;
+        if (v.unit) out.unit = v.unit;
         if (v.battery_entity) out.battery_entity = v.battery_entity;
         if (v.battery_display && v.battery_display !== "both") out.battery_display = v.battery_display;
         if (v.battery_type === "other") {
@@ -673,6 +681,8 @@ class PluviometerCardEditor extends HTMLElement {
       glass_color: c.glass_color || "clear",
       secondary_entity: c.secondary_entity || "",
       secondary_name: c.secondary_name || "",
+      secondary_unit: c.secondary_unit || "",
+      unit: c.unit || "",
       battery_entity: c.battery_entity || "",
       battery_display: c.battery_display || "both",
       battery_type: c.battery_type === "other" ? "other" : "percent",
@@ -689,6 +699,7 @@ class PluviometerCardEditor extends HTMLElement {
       { name: "label", label: t.label, selector: { text: {} } },
       { name: "max_level", label: t.max, selector: { number: { mode: "box", step: "any", min: 0 } } },
       { name: "decimals", label: t.decimals, selector: { number: { mode: "box", step: 1, min: 0, max: 3 } } },
+      { name: "unit", label: t.unitOpt, selector: { text: {} } },
       { name: "water_color", label: t.color, selector: { text: {} } },
       { name: "show_bracket", label: t.bracket, selector: { boolean: {} } },
       { name: "show_history", label: t.histOpt, selector: { boolean: {} } },
@@ -704,6 +715,7 @@ class PluviometerCardEditor extends HTMLElement {
       ] } } },
       { name: "secondary_entity", label: t.secondary, selector: { entity: RAIN } },
       { name: "secondary_name", label: t.secName, selector: { text: {} } },
+      { name: "secondary_unit", label: t.secUnit, selector: { text: {} } },
       { name: "battery_type", label: t.battType, selector: { select: { mode: "dropdown", options: [
         { value: "percent", label: t.battTypePct },
         { value: "other", label: t.battTypeOther },

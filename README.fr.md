@@ -23,7 +23,7 @@ capteur de précipitations (Netatmo, intégrations météo, DIY…), en mm ou en
 - **Batterie dans n'importe quel format** : pourcentage par défaut, ou `battery_type: other` pour les capteurs qui remontent autre chose, comme la tension de la pile sur un Ecowitt WH40. La valeur est alors affichée avec son unité, et renseigner `battery_min` / `battery_max` la retransforme en vraie jauge de niveau.
 - **Couleur du pluviomètre** : transparent, vert bouteille, ambré ou fumé (`glass_color`) — ou toute couleur libre en YAML.
 - Unité lue sur l'entité (mm, in…), décimales et couleur de l'eau configurables.
-- Sous-titre optionnel (ex. « aujourd'hui ») et entité secondaire (ex. intensité mm/h).
+- Sous-titre optionnel (ex. « aujourd'hui ») et entité secondaire (ex. intensité mm/h), avec son propre nom et sa propre unité d'affichage : montrer en `mm/h` un capteur qui remonte des mm, sans toucher à l'entité.
 - Éditeur natif HA avec des sélecteurs filtrés sur les entités pertinentes (device_class pluie, batterie, connectivité) + YAML complet, qui accepte n'importe quelle entité. Un tap ouvre le more-info.
 
 ## Installation (HACS)
@@ -69,7 +69,8 @@ secondary_entity: sensor.pluviometre_precipitation   # optionnel, ex. intensité
 | `battery_min` | — | Valeur correspondant à vide, dans l'unité du capteur (`other`) |
 | `battery_max` | — | Valeur correspondant à plein, dans l'unité du capteur (`other`) |
 | `connectivity_entity` | — | Capteur de connectivité affiché en haut à gauche |
-| `unit` | unité de l'entité | Forçage de l'unité |
+| `unit` | unité de l'entité | Unité affichée, remplace celle de l'entité |
+| `secondary_unit` | unité de l'entité | Unité affichée pour l'entité secondaire |
 | `secondary_entity` | — | Capteur supplémentaire affiché sous la valeur |
 | `language` | auto | `en`, `fr`, `de`, `es`, `it`, `nl` |
 
