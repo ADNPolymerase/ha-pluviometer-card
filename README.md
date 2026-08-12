@@ -55,10 +55,13 @@ type: custom:pluviometer-card
 entity: sensor.rain_gauge_precipitation_today
 name: Rain gauge
 label: today
-max_level: 20            # gauge scale, in the entity's unit (default 40)
-decimals: 1
-water_color: "#3d9bd9"
-secondary_entity: sensor.rain_gauge_precipitation   # optional, e.g. rain rate
+max_level: 20            # daily maximum, in the entity's unit (default 40)
+show_history: true       # adds the 24 h chart button
+secondary_entity: sensor.rain_gauge_precipitation
+secondary_name: Rain rate
+secondary_unit: mm/h     # shown as mm/h without touching the entity
+battery_entity: sensor.rain_gauge_battery
+connectivity_entity: binary_sensor.rain_gauge_connectivity
 ```
 
 | Option | Default | Description |
@@ -66,23 +69,23 @@ secondary_entity: sensor.rain_gauge_precipitation   # optional, e.g. rain rate
 | `entity` | **required** | Any numeric sensor (precipitation recommended) |
 | `name` | friendly name | Title shown next to the gauge |
 | `label` | — | Subtitle under the value (e.g. "today") |
-| `max_level` | `40` | Daily precipitation maximum (full gauge), in the entity's unit |
+| `unit` | entity unit | Displayed unit, overrides the entity's |
 | `decimals` | `1` | Decimals for the displayed value |
+| `max_level` | `40` | Daily precipitation maximum (full gauge), in the entity's unit |
 | `water_color` | `#3d9bd9` | Water fill color |
+| `glass_color` | `clear` | Gauge tint: `clear`, `bottle_green`, `amber`, `smoked` or a hex color |
 | `show_bracket` | `true` | Show the mounting bracket (semi-transparent) |
 | `show_history` | `false` | Adds the collapsible 24 h history button |
 | `history_bucket` | `hour` | 24 h chart bars: `hour` or `half_hour` |
-| `glass_color` | `clear` | Gauge tint: `clear`, `bottle_green`, `amber`, `smoked` or a hex color |
+| `secondary_entity` | — | Extra sensor shown under the value |
 | `secondary_name` | friendly name | Display name for the secondary entity |
+| `secondary_unit` | entity unit | Displayed unit for the secondary entity |
 | `battery_entity` | — | Battery sensor shown top-right |
-| `battery_display` | `both` | `icon`, `percent` or `both` |
 | `battery_type` | `percent` | `percent`, or `other` for a sensor that is not a percentage |
 | `battery_min` | — | Value meaning empty, in the sensor's unit (`other` only) |
 | `battery_max` | — | Value meaning full, in the sensor's unit (`other` only) |
+| `battery_display` | `both` | `icon`, `percent` or `both` |
 | `connectivity_entity` | — | Connectivity sensor shown top-left |
-| `unit` | entity unit | Displayed unit, overrides the entity's |
-| `secondary_unit` | entity unit | Displayed unit for the secondary entity |
-| `secondary_entity` | — | Extra sensor shown under the value |
 | `language` | auto | `en`, `fr`, `de`, `es`, `it`, `nl` |
 
 ## License

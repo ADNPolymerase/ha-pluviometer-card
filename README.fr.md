@@ -44,10 +44,13 @@ type: custom:pluviometer-card
 entity: sensor.pluviometre_precipitation_aujourd_hui
 name: Pluviomètre
 label: aujourd'hui
-max_level: 20            # échelle de la jauge, dans l'unité de l'entité (défaut 40)
-decimals: 1
-water_color: "#3d9bd9"
-secondary_entity: sensor.pluviometre_precipitation   # optionnel, ex. intensité
+max_level: 20            # maximum par jour, dans l'unité de l'entité (défaut 40)
+show_history: true       # bouton du tracé 24 h
+secondary_entity: sensor.pluviometre_precipitation
+secondary_name: Intensité
+secondary_unit: mm/h     # affiché en mm/h sans toucher à l'entité
+battery_entity: sensor.pluviometre_batterie
+connectivity_entity: binary_sensor.pluviometre_connectivite
 ```
 
 | Option | Défaut | Description |
@@ -55,23 +58,23 @@ secondary_entity: sensor.pluviometre_precipitation   # optionnel, ex. intensité
 | `entity` | **requis** | Tout capteur numérique (précipitations recommandé) |
 | `name` | friendly name | Titre affiché à côté de la jauge |
 | `label` | — | Sous-titre sous la valeur (ex. « aujourd'hui ») |
-| `max_level` | `40` | Maximum de précipitations par jour (jauge pleine), dans l'unité de l'entité |
+| `unit` | unité de l'entité | Unité affichée, remplace celle de l'entité |
 | `decimals` | `1` | Décimales de la valeur affichée |
+| `max_level` | `40` | Maximum de précipitations par jour (jauge pleine), dans l'unité de l'entité |
 | `water_color` | `#3d9bd9` | Couleur de l'eau |
+| `glass_color` | `clear` | Teinte : `clear`, `bottle_green`, `amber`, `smoked` ou couleur hex |
 | `show_bracket` | `true` | Afficher le collier de fixation (semi-transparent) |
 | `show_history` | `false` | Ajoute le bouton du tracé 24 h dépliable |
 | `history_bucket` | `hour` | Barres du tracé : `hour` ou `half_hour` |
-| `glass_color` | `clear` | Teinte : `clear`, `bottle_green`, `amber`, `smoked` ou couleur hex |
+| `secondary_entity` | — | Capteur supplémentaire affiché sous la valeur |
 | `secondary_name` | friendly name | Nom affiché de l'entité secondaire |
+| `secondary_unit` | unité de l'entité | Unité affichée pour l'entité secondaire |
 | `battery_entity` | — | Capteur batterie affiché en haut à droite |
-| `battery_display` | `both` | `icon`, `percent` ou `both` |
 | `battery_type` | `percent` | `percent`, ou `other` si le capteur n'est pas un pourcentage |
 | `battery_min` | — | Valeur correspondant à vide, dans l'unité du capteur (`other`) |
 | `battery_max` | — | Valeur correspondant à plein, dans l'unité du capteur (`other`) |
+| `battery_display` | `both` | `icon`, `percent` ou `both` |
 | `connectivity_entity` | — | Capteur de connectivité affiché en haut à gauche |
-| `unit` | unité de l'entité | Unité affichée, remplace celle de l'entité |
-| `secondary_unit` | unité de l'entité | Unité affichée pour l'entité secondaire |
-| `secondary_entity` | — | Capteur supplémentaire affiché sous la valeur |
 | `language` | auto | `en`, `fr`, `de`, `es`, `it`, `nl` |
 
 ## Licence
