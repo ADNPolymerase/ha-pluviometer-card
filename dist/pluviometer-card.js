@@ -1,4 +1,4 @@
-const CARD_VERSION = "0.4.1";
+const CARD_VERSION = "0.4.2";
 
 console.info(
   "%c PLUVIOMETER-CARD %c v" + CARD_VERSION + " ",
@@ -142,6 +142,19 @@ function pvAlpha(color, a) {
 function pvGlassColors(v) {
   if (!v || PV_GLASS[v]) return PV_GLASS[v || "clear"];
   return { fill: pvAlpha(v, 0.24), stroke: v };
+}
+
+/**
+ * Config keys holding an entity id. A picker that has just been created can emit
+ * an empty value before it knows its own, and that empty must never be written
+ * over a configured entity — that is how a card silently loses its sensor.
+ */
+const PV_ENTITY_KEYS = ["entity", "secondary_entity", "battery_entity", "connectivity_entity"];
+
+/** Shallow equality — this card's config holds only scalars. */
+function pvSameConfig(a, b) {
+  const ka = Object.keys(a), kb = Object.keys(b);
+  return ka.length === kb.length && ka.every((k) => a[k] === b[k]);
 }
 
 const PV_DROP = "M0 -7 C2.8 -3 5 0.5 5 3.2 A5 5 0 1 1 -5 3.2 C-5 0.5 -2.8 -3 0 -7 Z";
@@ -660,11 +673,24 @@ class PluviometerCardEditor extends HTMLElement {
         if (v.connectivity_entity) out.connectivity_entity = v.connectivity_entity;
         if (v.secondary_entity) out.secondary_entity = v.secondary_entity;
         if (v.language) out.language = v.language;
+        // Home Assistant calls setConfig again after every config-changed we emit,
+        // so pickers can re-announce themselves. An empty value arriving before the
+        // user has touched anything is a picker initialising, never a deliberate
+        // clear: keep what was configured. After a real interaction, clearing works.
+        for (const k of PV_ENTITY_KEYS) {
+          if (!out[k] && this._config[k] && !this._touched) out[k] = this._config[k];
+        }
+        if (pvSameConfig(out, this._config)) return;   // echo, nothing to save
+
         this._config = out;
         this._render();
         this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: out }, bubbles: true, composed: true }));
       });
       this.appendChild(this._form);
+      // Anything emitted before one of these fires came from the form setting
+      // itself up, not from the user. Read by the guard above.
+      for (const ev of ["focusin", "pointerdown", "keydown"])
+        this.addEventListener(ev, () => { this._touched = true; }, { once: true });
     }
 
     this._form.hass = this._hass;

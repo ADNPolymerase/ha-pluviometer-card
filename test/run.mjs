@@ -431,4 +431,51 @@ function makeEditor(config) {
     JSON.stringify(picker.selector.entity.filter), '[{"domain":"sensor"}]');
 }
 
+// ── Silent config loss ───────────────────────────────────────────────────────
+// HA calls setConfig again after every config-changed the editor emits. If that
+// rebuilt the pickers, a freshly created one can emit an empty value-changed
+// before it knows its value, and that empty lands on top of the configured
+// entity. The card then shows "entity not found" with nobody having touched it.
+
+{
+  const { ed } = makeEditor({ entity: RAIN });
+  const form = ed._form;
+  ed.setConfig({ entity: RAIN });
+  ed.setConfig({ entity: RAIN });
+  check('le formulaire n\'est pas reconstruit à chaque setConfig', ed._form === form, true);
+}
+
+{
+  // Pickers initialising: empty values arriving before any user interaction.
+  const { ed, fire } = makeEditor({ entity: RAIN, secondary_entity: 'sensor.rate' });
+  const before = ed.events.length;
+  fire({ entity: '', secondary_entity: '' });
+  check('picker qui s\'initialise : l\'entité configurée survit', ed._config.entity, RAIN);
+  check('picker qui s\'initialise : l\'entité secondaire survit',
+    ed._config.secondary_entity, 'sensor.rate');
+  check('picker qui s\'initialise : aucune config sans entité émise',
+    ed.events.slice(before).filter(e => e.type === 'config-changed')
+      .every(e => !!e.detail?.config?.entity), true);
+}
+
+{
+  // Once the user has actually touched the form, clearing is deliberate.
+  const { ed, fire } = makeEditor({ entity: RAIN, secondary_entity: 'sensor.rate' });
+  ed._touched = true;
+  fire({ entity: RAIN });
+  check('après interaction, effacer le secondaire est accepté',
+    ed._config.secondary_entity, undefined);
+  check('après interaction, l\'entité principale reste',
+    ed._config.entity, RAIN);
+}
+
+{
+  // The same value coming back is HA echoing, not an edit.
+  const { ed, fire } = makeEditor({ entity: RAIN });
+  fire({ entity: 'sensor.other' });
+  const n = ed.events.length;
+  fire({ entity: 'sensor.other' });
+  check('écho identique : pas de nouvel événement', ed.events.length, n);
+}
+
 report();
