@@ -47,7 +47,7 @@ name: Pluviomètre
 label: aujourd'hui
 max_level: 20            # maximum par jour, dans l'unité de l'entité (défaut 40)
 show_history: true       # bouton du tracé 24 h
-history_expanded: true   # et ouvert d'emblée
+history_expanded: true   # et visible en permanence
 secondary_entity: sensor.pluviometre_precipitation
 secondary_name: Intensité
 secondary_unit: mm/h     # affiché en mm/h sans toucher à l'entité
@@ -80,7 +80,7 @@ secondary_entity:
 | `glass_color` | `clear` | Teinte : `clear`, `bottle_green`, `amber`, `smoked` ou couleur hex |
 | `show_bracket` | `true` | Afficher le collier de fixation (semi-transparent) |
 | `show_history` | `false` | Ajoute le bouton du tracé 24 h dépliable |
-| `history_expanded` | `false` | Ouvre ce tracé par défaut, sans clic |
+| `history_expanded` | `false` | Garde ce tracé visible en permanence, sans bouton à cliquer |
 | `history_bucket` | `hour` | Barres du tracé : `hour` ou `half_hour` |
 | `secondary_entity` | — | Capteur sous la valeur. Une liste donne une ligne par entité |
 | `secondary_name` | friendly name | Nom affiché, uniquement si une seule entité secondaire |

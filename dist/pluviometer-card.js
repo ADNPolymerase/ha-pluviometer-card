@@ -265,10 +265,11 @@ class PluviometerCard extends HTMLElement {
     this.innerHTML = "";
     const c = this._config;
     const g = pvGlassColors(c.glass_color);
-    // Drawn open from the start when asked, rather than opened after the fact:
-    // no transition to watch and no first frame in the collapsed state.
+    // Permanently visible when asked: drawn open, no chevron, nothing to click.
+    // Not merely opened after the fact, so there is no collapsed first frame.
     const histOpen = c.show_history === true && c.history_expanded === true;
     this._histOpen = histOpen;
+    this._histStatic = histOpen;
     const card = document.createElement("ha-card");
     card.style.setProperty("--pv-glass-fill", g.fill);
     card.style.setProperty("--pv-glass-stroke", g.stroke);
@@ -302,6 +303,8 @@ class PluviometerCard extends HTMLElement {
         .pv-hist-toggle.pv-open svg { transform: rotate(180deg); }
         .pv-hist { overflow: hidden; max-height: 0; transition: max-height 0.35s ease; padding: 0 16px; }
         .pv-hist.pv-open { max-height: 220px; padding-bottom: 14px; }
+        .pv-hist.pv-static { max-height: none; }
+        .pv-hist-toggle.pv-static { cursor: default; }
         .pv-hist-status { text-align: center; color: var(--secondary-text-color); font-size: 0.85em; padding: 10px 0; }
         .pv-hist-grid { stroke: var(--divider-color, #e0e0e0); stroke-width: 1; }
         .pv-hist-axis { font-size: 10px; fill: var(--secondary-text-color); }
@@ -468,11 +471,11 @@ class PluviometerCard extends HTMLElement {
         </div>
       </div>
       ${c.show_history ? `
-      <div class="pv-hist-toggle${histOpen ? " pv-open" : ""}" id="pv-hist-toggle">
-        <svg width="15" height="15" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="pv-hist-toggle${histOpen ? " pv-open pv-static" : ""}" id="pv-hist-toggle">
+        ${histOpen ? "" : `<svg width="15" height="15" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`}
         <span id="pv-hist-label"></span>
       </div>
-      <div class="pv-hist${histOpen ? " pv-open" : ""}" id="pv-hist"><div id="pv-hist-body"></div></div>` : ""}
+      <div class="pv-hist${histOpen ? " pv-open pv-static" : ""}" id="pv-hist"><div id="pv-hist-body"></div></div>` : ""}
     `;
     this.appendChild(card);
     this._el = {};
@@ -484,7 +487,7 @@ class PluviometerCard extends HTMLElement {
         detail: { entityId: this._config.entity }, bubbles: true, composed: true,
       }));
     });
-    if (this._el["pv-hist-toggle"]) {
+    if (this._el["pv-hist-toggle"] && !histOpen) {
       this._el["pv-hist-toggle"].addEventListener("click", (e) => {
         e.stopPropagation();
         this._toggleHist();
@@ -493,6 +496,9 @@ class PluviometerCard extends HTMLElement {
   }
 
   _toggleHist() {
+    // Nothing to fold when the chart is meant to stay visible. Guarding here as
+    // well as when wiring the click keeps the two from drifting apart.
+    if (this._histStatic) return;
     this._histOpen = !this._histOpen;
     this._el["pv-hist-toggle"].classList.toggle("pv-open", this._histOpen);
     this._el["pv-hist"].classList.toggle("pv-open", this._histOpen);

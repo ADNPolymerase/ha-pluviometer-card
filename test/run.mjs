@@ -567,12 +567,24 @@ function makeEditor(config) {
 
 {
   const open = buildCard({ entity: RAIN, show_history: true, history_expanded: true });
-  check('tracé ouvert par défaut : état interne', open._histOpen, true);
-  contains('tracé ouvert par défaut : panneau déplié', markup(open), 'class="pv-hist pv-open"');
-  contains('tracé ouvert par défaut : chevron retourné', markup(open), 'class="pv-hist-toggle pv-open"');
+  check('tracé permanent : état interne', open._histOpen, true);
+  contains('tracé permanent : panneau déplié et figé',
+    markup(open), 'class="pv-hist pv-open pv-static"');
+  check('tracé permanent : plus de chevron à cliquer',
+    /viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/.test(markup(open)), false);
+  contains('tracé permanent : le libellé reste',
+    markup(open), 'id="pv-hist-label"');
+  // The harness records no listeners, so the guard is asserted through its
+  // effect rather than through the wiring.
+  let folded = false;
+  try { open._toggleHist(); } catch (e) { folded = true; }   // reached the DOM = it tried
+  check('tracé permanent : replier ne fait rien',
+    !folded && open._histOpen === true, true);
 
   const shut = buildCard({ entity: RAIN, show_history: true });
   check('sans l\'option, le tracé reste replié', shut._histOpen, false);
+  contains('sans l\'option, le chevron est là',
+    markup(shut), 'd="M7 10l5 5 5-5"');
   // Loosely matching /pv-open/ would hit the CSS rules in the <style> block.
   check('sans l\'option, aucune classe pv-open posée',
     /class="pv-hist(-toggle)? pv-open"/.test(markup(shut)), false);

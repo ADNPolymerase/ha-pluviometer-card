@@ -58,7 +58,7 @@ name: Rain gauge
 label: today
 max_level: 20            # daily maximum, in the entity's unit (default 40)
 show_history: true       # adds the 24 h chart button
-history_expanded: true   # and opens it straight away
+history_expanded: true   # and keeps it permanently visible
 secondary_entity: sensor.rain_gauge_precipitation
 secondary_name: Rain rate
 secondary_unit: mm/h     # shown as mm/h without touching the entity
@@ -90,7 +90,7 @@ secondary_entity:
 | `glass_color` | `clear` | Gauge tint: `clear`, `bottle_green`, `amber`, `smoked` or a hex color |
 | `show_bracket` | `true` | Show the mounting bracket (semi-transparent) |
 | `show_history` | `false` | Adds the collapsible 24 h history button |
-| `history_expanded` | `false` | Open that chart by default, no click needed |
+| `history_expanded` | `false` | Keep that chart permanently visible, no button to click |
 | `history_bucket` | `hour` | 24 h chart bars: `hour` or `half_hour` |
 | `secondary_entity` | — | Extra sensor under the value. A list gives one line per entity |
 | `secondary_name` | friendly name | Display name, single secondary entity only |
