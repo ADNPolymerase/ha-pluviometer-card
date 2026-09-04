@@ -1,4 +1,4 @@
-const CARD_VERSION = "0.4.2";
+const CARD_VERSION = "0.5.0";
 
 console.info(
   "%c PLUVIOMETER-CARD %c v" + CARD_VERSION + " ",
@@ -10,7 +10,7 @@ const PV_LANGNAMES = { en: "English", fr: "Français", de: "Deutsch", es: "Espa�
 
 const PV_T = {
   en: { entity: "Rain sensor", name: "Name", label: "Subtitle", max: "Daily precipitation maximum (full gauge)", decimals: "Decimals",
-    color: "Water color (hex)", secondary: "Secondary entity (e.g. rain rate)", language: "Language", auto: "Auto",
+    color: "Water color (hex)", secondary: "Secondary entities (e.g. rain rate)", language: "Language", auto: "Auto",
     unavailable: "Unavailable", bracket: "Show mounting bracket",
     notCumul: "This sensor does not look like a daily total.", createBtn: "Create the daily total sensor",
     creating: "Creating…", created: "Created and selected: ", createError: "Creation failed: ",
@@ -23,9 +23,12 @@ const PV_T = {
     connOpt: "Connectivity entity",
     battMin: "Battery empty at (same unit as the sensor)", battMax: "Battery full at",
     battType: "Battery format", battTypePct: "Percentage (standard)", battTypeOther: "Other unit (voltage…)",
-    unitOpt: "Displayed unit (overrides the entity)", secUnit: "Secondary entity displayed unit" },
+    unitOpt: "Displayed unit (overrides the entity)", secUnit: "Secondary entity displayed unit",
+    histExpand: "Open the chart by default",
+    secDisplay: "Display", secGauge: "Gauge", secChart: "24 h chart",
+    secSecondary: "Secondary entities", secBattery: "Battery and connectivity", secAdvanced: "Advanced" },
   fr: { entity: "Capteur de pluie", name: "Nom", label: "Sous-titre", max: "Maximum de précipitations par jour (jauge pleine)", decimals: "Décimales",
-    color: "Couleur de l'eau (hex)", secondary: "Entité secondaire (ex. intensité)", language: "Langue", auto: "Auto",
+    color: "Couleur de l'eau (hex)", secondary: "Entités secondaires (ex. intensité)", language: "Langue", auto: "Auto",
     unavailable: "Indisponible", bracket: "Afficher le collier de fixation",
     notCumul: "Ce capteur ne semble pas être un cumul journalier.", createBtn: "Créer le capteur de cumul journalier",
     creating: "Création…", created: "Créé et sélectionné : ", createError: "Échec de la création : ",
@@ -38,9 +41,12 @@ const PV_T = {
     connOpt: "Entité connectivité",
     battMin: "Batterie vide à (unité du capteur)", battMax: "Batterie pleine à",
     battType: "Format de la batterie", battTypePct: "Pourcentage (classique)", battTypeOther: "Autre unité (tension…)",
-    unitOpt: "Unité affichée (remplace celle de l'entité)", secUnit: "Unité affichée de l'entité secondaire" },
+    unitOpt: "Unité affichée (remplace celle de l'entité)", secUnit: "Unité affichée de l'entité secondaire",
+    histExpand: "Ouvrir le tracé par défaut",
+    secDisplay: "Affichage", secGauge: "Jauge", secChart: "Tracé 24 h",
+    secSecondary: "Entités secondaires", secBattery: "Batterie et connectivité", secAdvanced: "Avancé" },
   de: { entity: "Regensensor", name: "Name", label: "Untertitel", max: "Tagesmaximum Niederschlag (volle Skala)", decimals: "Dezimalstellen",
-    color: "Wasserfarbe (Hex)", secondary: "Sekundäre Entität (z. B. Regenrate)", language: "Sprache", auto: "Auto",
+    color: "Wasserfarbe (Hex)", secondary: "Sekundäre Entitäten (z. B. Regenrate)", language: "Sprache", auto: "Auto",
     unavailable: "Nicht verfügbar", bracket: "Halterung anzeigen",
     notCumul: "Dieser Sensor scheint keine Tagessumme zu sein.", createBtn: "Tagessummen-Sensor erstellen",
     creating: "Wird erstellt…", created: "Erstellt und ausgewählt: ", createError: "Fehlgeschlagen: ",
@@ -53,9 +59,12 @@ const PV_T = {
     connOpt: "Konnektivitäts-Entität",
     battMin: "Batterie leer bei (Einheit des Sensors)", battMax: "Batterie voll bei",
     battType: "Batterieformat", battTypePct: "Prozent (Standard)", battTypeOther: "Andere Einheit (Spannung…)",
-    unitOpt: "Angezeigte Einheit (überschreibt die Entität)", secUnit: "Angezeigte Einheit der sekundären Entität" },
+    unitOpt: "Angezeigte Einheit (überschreibt die Entität)", secUnit: "Angezeigte Einheit der sekundären Entität",
+    histExpand: "Diagramm standardmäßig geöffnet",
+    secDisplay: "Anzeige", secGauge: "Messgerät", secChart: "24-h-Diagramm",
+    secSecondary: "Sekundäre Entitäten", secBattery: "Batterie und Konnektivität", secAdvanced: "Erweitert" },
   es: { entity: "Sensor de lluvia", name: "Nombre", label: "Subtítulo", max: "Máximo diario de precipitación (escala completa)", decimals: "Decimales",
-    color: "Color del agua (hex)", secondary: "Entidad secundaria (p. ej. intensidad)", language: "Idioma", auto: "Auto",
+    color: "Color del agua (hex)", secondary: "Entidades secundarias (p. ej. intensidad)", language: "Idioma", auto: "Auto",
     unavailable: "No disponible", bracket: "Mostrar el soporte",
     notCumul: "Este sensor no parece un total diario.", createBtn: "Crear el sensor de total diario",
     creating: "Creando…", created: "Creado y seleccionado: ", createError: "Error al crear: ",
@@ -68,9 +77,12 @@ const PV_T = {
     connOpt: "Entidad de conectividad",
     battMin: "Batería vacía a (unidad del sensor)", battMax: "Batería llena a",
     battType: "Formato de la batería", battTypePct: "Porcentaje (estándar)", battTypeOther: "Otra unidad (voltaje…)",
-    unitOpt: "Unidad mostrada (reemplaza la de la entidad)", secUnit: "Unidad mostrada de la entidad secundaria" },
+    unitOpt: "Unidad mostrada (reemplaza la de la entidad)", secUnit: "Unidad mostrada de la entidad secundaria",
+    histExpand: "Abrir el gráfico por defecto",
+    secDisplay: "Visualización", secGauge: "Medidor", secChart: "Gráfico 24 h",
+    secSecondary: "Entidades secundarias", secBattery: "Batería y conectividad", secAdvanced: "Avanzado" },
   it: { entity: "Sensore pioggia", name: "Nome", label: "Sottotitolo", max: "Massimo giornaliero di pioggia (scala piena)", decimals: "Decimali",
-    color: "Colore dell'acqua (hex)", secondary: "Entità secondaria (es. intensità)", language: "Lingua", auto: "Auto",
+    color: "Colore dell'acqua (hex)", secondary: "Entità secondarie (es. intensità)", language: "Lingua", auto: "Auto",
     unavailable: "Non disponibile", bracket: "Mostra la staffa",
     notCumul: "Questo sensore non sembra un totale giornaliero.", createBtn: "Crea il sensore del totale giornaliero",
     creating: "Creazione…", created: "Creato e selezionato: ", createError: "Creazione fallita: ",
@@ -83,9 +95,12 @@ const PV_T = {
     connOpt: "Entità connettività",
     battMin: "Batteria scarica a (unità del sensore)", battMax: "Batteria carica a",
     battType: "Formato della batteria", battTypePct: "Percentuale (standard)", battTypeOther: "Altra unità (tensione…)",
-    unitOpt: "Unità visualizzata (sostituisce quella dell'entità)", secUnit: "Unità visualizzata dell'entità secondaria" },
+    unitOpt: "Unità visualizzata (sostituisce quella dell'entità)", secUnit: "Unità visualizzata dell'entità secondaria",
+    histExpand: "Apri il grafico per impostazione predefinita",
+    secDisplay: "Visualizzazione", secGauge: "Misuratore", secChart: "Grafico 24 h",
+    secSecondary: "Entità secondarie", secBattery: "Batteria e connettività", secAdvanced: "Avanzate" },
   nl: { entity: "Regensensor", name: "Naam", label: "Ondertitel", max: "Dagelijks neerslagmaximum (volle schaal)", decimals: "Decimalen",
-    color: "Waterkleur (hex)", secondary: "Secundaire entiteit (bijv. regenintensiteit)", language: "Taal", auto: "Auto",
+    color: "Waterkleur (hex)", secondary: "Secundaire entiteiten (bijv. regenintensiteit)", language: "Taal", auto: "Auto",
     unavailable: "Niet beschikbaar", bracket: "Beugel tonen",
     notCumul: "Deze sensor lijkt geen dagtotaal te zijn.", createBtn: "Dagtotaal-sensor aanmaken",
     creating: "Aanmaken…", created: "Aangemaakt en geselecteerd: ", createError: "Aanmaken mislukt: ",
@@ -98,7 +113,10 @@ const PV_T = {
     connOpt: "Connectiviteits-entiteit",
     battMin: "Batterij leeg bij (eenheid van de sensor)", battMax: "Batterij vol bij",
     battType: "Batterijformaat", battTypePct: "Percentage (standaard)", battTypeOther: "Andere eenheid (spanning…)",
-    unitOpt: "Weergegeven eenheid (overschrijft die van de entiteit)", secUnit: "Weergegeven eenheid secundaire entiteit" },
+    unitOpt: "Weergegeven eenheid (overschrijft die van de entiteit)", secUnit: "Weergegeven eenheid secundaire entiteit",
+    histExpand: "Grafiek standaard geopend",
+    secDisplay: "Weergave", secGauge: "Meter", secChart: "24 u-grafiek",
+    secSecondary: "Secundaire entiteiten", secBattery: "Batterij en connectiviteit", secAdvanced: "Geavanceerd" },
 };
 
 function pvSlugify(s) {
@@ -151,10 +169,42 @@ function pvGlassColors(v) {
  */
 const PV_ENTITY_KEYS = ["entity", "secondary_entity", "battery_entity", "connectivity_entity"];
 
-/** Shallow equality — this card's config holds only scalars. */
+/** True for anything the editor should treat as "no value", empty list included. */
+function pvEmpty(v) {
+  return v == null || v === "" || (Array.isArray(v) && v.length === 0);
+}
+
+/** Shallow equality, array-aware — secondary_entity can hold a list. */
 function pvSameConfig(a, b) {
+  const same = (x, y) => (Array.isArray(x) && Array.isArray(y))
+    ? x.length === y.length && x.every((v, i) => v === y[i])
+    : x === y;
   const ka = Object.keys(a), kb = Object.keys(b);
-  return ka.length === kb.length && ka.every((k) => a[k] === b[k]);
+  return ka.length === kb.length && ka.every((k) => same(a[k], b[k]));
+}
+
+/** The secondary lines go through innerHTML to be multi-line, so escape them. */
+function pvEsc(s) {
+  return String(s).replace(/[&<>"]/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+/**
+ * Secondary entities, normalised to a list of {entity, name, unit}. Accepts a
+ * single id, a list of ids, or a list of objects. secondary_name and
+ * secondary_unit only apply when a single entity is configured — with several,
+ * a per-line name would be ambiguous, so each line falls back to its entity.
+ */
+function pvSecondaries(c) {
+  const raw = c.secondary_entity;
+  const list = (Array.isArray(raw) ? raw : raw ? [raw] : [])
+    .map((it) => (typeof it === "string" ? { entity: it } : { ...it }))
+    .filter((it) => it && it.entity);
+  if (list.length === 1) {
+    if (!list[0].name && c.secondary_name) list[0].name = c.secondary_name;
+    if (!list[0].unit && c.secondary_unit) list[0].unit = c.secondary_unit;
+  }
+  return list;
 }
 
 const PV_DROP = "M0 -7 C2.8 -3 5 0.5 5 3.2 A5 5 0 1 1 -5 3.2 C-5 0.5 -2.8 -3 0 -7 Z";
@@ -215,6 +265,10 @@ class PluviometerCard extends HTMLElement {
     this.innerHTML = "";
     const c = this._config;
     const g = pvGlassColors(c.glass_color);
+    // Drawn open from the start when asked, rather than opened after the fact:
+    // no transition to watch and no first frame in the collapsed state.
+    const histOpen = c.show_history === true && c.history_expanded === true;
+    this._histOpen = histOpen;
     const card = document.createElement("ha-card");
     card.style.setProperty("--pv-glass-fill", g.fill);
     card.style.setProperty("--pv-glass-stroke", g.stroke);
@@ -231,6 +285,7 @@ class PluviometerCard extends HTMLElement {
         .pv-unit { font-size: 0.5em; font-weight: 400; color: var(--secondary-text-color); margin-left: 2px; }
         .pv-label { font-size: 0.85em; color: var(--secondary-text-color); }
         .pv-secondary { font-size: 0.85em; color: var(--secondary-text-color); margin-top: 6px; }
+        .pv-sec-line + .pv-sec-line { margin-top: 2px; }
         .pv-glass { fill: var(--pv-glass-fill); stroke: var(--pv-glass-stroke); stroke-width: 2.5; }
         .pv-glass-inner { fill: var(--pv-glass-fill); stroke: var(--pv-glass-stroke); stroke-width: 1; opacity: 0.6; }
         .pv-water { transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -413,11 +468,11 @@ class PluviometerCard extends HTMLElement {
         </div>
       </div>
       ${c.show_history ? `
-      <div class="pv-hist-toggle" id="pv-hist-toggle">
+      <div class="pv-hist-toggle${histOpen ? " pv-open" : ""}" id="pv-hist-toggle">
         <svg width="15" height="15" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span id="pv-hist-label"></span>
       </div>
-      <div class="pv-hist" id="pv-hist"><div id="pv-hist-body"></div></div>` : ""}
+      <div class="pv-hist${histOpen ? " pv-open" : ""}" id="pv-hist"><div id="pv-hist-body"></div></div>` : ""}
     `;
     this.appendChild(card);
     this._el = {};
@@ -445,6 +500,10 @@ class PluviometerCard extends HTMLElement {
   }
 
   async _loadHist() {
+    // _update() can ask for the chart on every state push, so without this a
+    // freshly opened chart would fire a request per push until the first lands.
+    if (this._histLoading) return;
+    this._histLoading = true;
     const t = pvT(this._hass, this._config);
     const body = this._el["pv-hist-body"];
     if (!body.innerHTML) body.innerHTML = `<div class="pv-hist-status">…</div>`;
@@ -456,10 +515,14 @@ class PluviometerCard extends HTMLElement {
       const pts = raw
         .map((s) => ({ t: new Date(s.last_changed || s.last_updated).getTime(), v: parseFloat(s.state) }))
         .filter((p) => !isNaN(p.v) && !isNaN(p.t));
-      this._histAt = Date.now();
       body.innerHTML = pts.length ? this._histSvg(pts) : `<div class="pv-hist-status">${t.noData}</div>`;
     } catch (e) {
       body.innerHTML = `<div class="pv-hist-status">${t.noData}</div>`;
+    } finally {
+      // Stamped even on failure, so a chart that cannot load backs off instead
+      // of retrying on every state push.
+      this._histAt = Date.now();
+      this._histLoading = false;
     }
   }
 
@@ -532,7 +595,7 @@ class PluviometerCard extends HTMLElement {
     this._el["pv-label"].textContent = c.label || "";
     if (this._el["pv-hist-label"]) {
       this._el["pv-hist-label"].textContent = t.hist;
-      if (this._histOpen && this._histAt && Date.now() - this._histAt > 600000) this._loadHist();
+      if (this._histOpen && (!this._histAt || Date.now() - this._histAt > 600000)) this._loadHist();
     }
 
     if (!st || st.state === "unavailable" || st.state === "unknown" || isNaN(parseFloat(st.state))) {
@@ -556,16 +619,18 @@ class PluviometerCard extends HTMLElement {
     this._updateCorners();
 
     const sec = this._el["pv-secondary"];
-    if (c.secondary_entity && this._hass.states[c.secondary_entity]) {
-      const s2 = this._hass.states[c.secondary_entity];
-      const u2 = c.secondary_unit || s2.attributes.unit_of_measurement || "";
-      const n2 = parseFloat(s2.state);
-      sec.hidden = false;
-      sec.textContent = (c.secondary_name || s2.attributes.friendly_name || c.secondary_entity) + " : " +
-        (isNaN(n2) ? s2.state : pvFmt(n2, c.decimals)) + (u2 ? " " + u2 : "");
-    } else {
-      sec.hidden = true;
-    }
+    const lines = pvSecondaries(c)
+      .filter((it) => this._hass.states[it.entity])
+      .map((it) => {
+        const s2 = this._hass.states[it.entity];
+        const u2 = it.unit || s2.attributes.unit_of_measurement || "";
+        const n2 = parseFloat(s2.state);
+        const label = it.name || s2.attributes.friendly_name || it.entity;
+        const value = (isNaN(n2) ? s2.state : pvFmt(n2, c.decimals)) + (u2 ? " " + u2 : "");
+        return `<div class="pv-sec-line">${pvEsc(label)} : ${pvEsc(value)}</div>`;
+      });
+    sec.hidden = lines.length === 0;
+    sec.innerHTML = lines.join("");
   }
 
   _updateCorners() {
@@ -658,10 +723,17 @@ class PluviometerCardEditor extends HTMLElement {
         if (v.water_color && v.water_color !== "#3d9bd9") out.water_color = v.water_color;
         if (v.show_bracket === false) out.show_bracket = false;
         if (v.show_history) out.show_history = true;
+        if (v.show_history && v.history_expanded) out.history_expanded = true;
         if (v.history_bucket && v.history_bucket !== "hour") out.history_bucket = v.history_bucket;
         if (v.glass_color && v.glass_color !== "clear") out.glass_color = v.glass_color;
-        if (v.secondary_name) out.secondary_name = v.secondary_name;
-        if (v.secondary_unit) out.secondary_unit = v.secondary_unit;
+        // A per-line name has no meaning once several entities are listed, so the
+        // two single-entity fields only survive while exactly one is configured.
+        const picked = pvEmpty(v.secondary_entity) ? []
+          : (Array.isArray(v.secondary_entity) ? v.secondary_entity : [v.secondary_entity]);
+        if (picked.length === 1) {
+          if (v.secondary_name) out.secondary_name = v.secondary_name;
+          if (v.secondary_unit) out.secondary_unit = v.secondary_unit;
+        }
         if (v.unit) out.unit = v.unit;
         if (v.battery_entity) out.battery_entity = v.battery_entity;
         if (v.battery_display && v.battery_display !== "both") out.battery_display = v.battery_display;
@@ -671,14 +743,26 @@ class PluviometerCardEditor extends HTMLElement {
           if (v.battery_max !== "" && v.battery_max != null) out.battery_max = parseFloat(v.battery_max);
         }
         if (v.connectivity_entity) out.connectivity_entity = v.connectivity_entity;
-        if (v.secondary_entity) out.secondary_entity = v.secondary_entity;
+        if (picked.length) {
+          // The picker only ever hands back ids. Re-attach the per-line name and
+          // unit a YAML config may carry, so editing in the UI does not drop them.
+          const rawPrev = this._config.secondary_entity;
+          const prev = new Map((Array.isArray(rawPrev) ? rawPrev : [])
+            .filter((it) => it && typeof it === "object" && it.entity)
+            .map((it) => [it.entity, it]));
+          const list = picked.map((id) => {
+            const was = prev.get(id);
+            return was && (was.name || was.unit) ? { ...was, entity: id } : id;
+          });
+          out.secondary_entity = list.length === 1 && typeof list[0] === "string" ? list[0] : list;
+        }
         if (v.language) out.language = v.language;
         // Home Assistant calls setConfig again after every config-changed we emit,
         // so pickers can re-announce themselves. An empty value arriving before the
         // user has touched anything is a picker initialising, never a deliberate
         // clear: keep what was configured. After a real interaction, clearing works.
         for (const k of PV_ENTITY_KEYS) {
-          if (!out[k] && this._config[k] && !this._touched) out[k] = this._config[k];
+          if (pvEmpty(out[k]) && !pvEmpty(this._config[k]) && !this._touched) out[k] = this._config[k];
         }
         if (pvSameConfig(out, this._config)) return;   // echo, nothing to save
 
@@ -703,9 +787,10 @@ class PluviometerCardEditor extends HTMLElement {
       water_color: c.water_color || "#3d9bd9",
       show_bracket: c.show_bracket !== false,
       show_history: c.show_history === true,
+      history_expanded: c.history_expanded === true,
       history_bucket: c.history_bucket || "hour",
       glass_color: c.glass_color || "clear",
-      secondary_entity: c.secondary_entity || "",
+      secondary_entity: pvSecondaries(c).map((it) => it.entity),
       secondary_name: c.secondary_name || "",
       secondary_unit: c.secondary_unit || "",
       unit: c.unit || "",
@@ -719,47 +804,77 @@ class PluviometerCardEditor extends HTMLElement {
     };
     const battOther = c.battery_type === "other";
     const RAIN = { filter: [{ domain: "sensor", device_class: "precipitation" }, { domain: "sensor", device_class: "precipitation_intensity" }] };
+    const nSec = pvSecondaries(c).length;
+    const group = (title, icon, schema) => ({ name: "", type: "expandable", title, icon, schema });
     this._form.schema = [
       { name: "entity", label: t.entity, selector: { entity: RAIN } },
-      { name: "name", label: t.name, selector: { text: {} } },
-      { name: "label", label: t.label, selector: { text: {} } },
-      { name: "max_level", label: t.max, selector: { number: { mode: "box", step: "any", min: 0 } } },
-      { name: "decimals", label: t.decimals, selector: { number: { mode: "box", step: 1, min: 0, max: 3 } } },
-      { name: "unit", label: t.unitOpt, selector: { text: {} } },
-      { name: "water_color", label: t.color, selector: { text: {} } },
-      { name: "show_bracket", label: t.bracket, selector: { boolean: {} } },
-      { name: "show_history", label: t.histOpt, selector: { boolean: {} } },
-      { name: "history_bucket", label: t.bucketOpt, selector: { select: { mode: "dropdown", options: [
-        { value: "hour", label: t.bucketHour },
-        { value: "half_hour", label: t.bucketHalf },
-      ] } } },
-      { name: "glass_color", label: t.glassOpt, selector: { select: { mode: "dropdown", options: [
-        { value: "clear", label: t.glassClear },
-        { value: "bottle_green", label: t.glassGreen },
-        { value: "amber", label: t.glassAmber },
-        { value: "smoked", label: t.glassSmoked },
-      ] } } },
-      { name: "secondary_entity", label: t.secondary, selector: { entity: RAIN } },
-      { name: "secondary_name", label: t.secName, selector: { text: {} } },
-      { name: "secondary_unit", label: t.secUnit, selector: { text: {} } },
-      { name: "battery_type", label: t.battType, selector: { select: { mode: "dropdown", options: [
-        { value: "percent", label: t.battTypePct },
-        { value: "other", label: t.battTypeOther },
-      ] } } },
-      { name: "battery_entity", label: t.battOpt, selector: { entity: battOther
-        ? { filter: [{ domain: "sensor" }] }
-        : { filter: [{ domain: "sensor", device_class: "battery" }] } } },
-      ...(battOther ? [
-        { name: "battery_min", label: t.battMin, selector: { number: { mode: "box", step: "any" } } },
-        { name: "battery_max", label: t.battMax, selector: { number: { mode: "box", step: "any" } } },
-      ] : []),
-      { name: "battery_display", label: t.battDisp, selector: { select: { mode: "dropdown", options: [
-        { value: "both", label: t.battBoth },
-        { value: "icon", label: t.battIcon },
-        { value: "percent", label: t.battPct },
-      ] } } },
-      { name: "connectivity_entity", label: t.connOpt, selector: { entity: { filter: [{ domain: "binary_sensor", device_class: "connectivity" }] } } },
-      { name: "language", label: t.language, selector: { select: { mode: "dropdown", options: [{ value: "", label: t.auto }].concat(Object.keys(PV_LANGNAMES).map((l) => ({ value: l, label: PV_LANGNAMES[l] }))) } } },
+
+      group(t.secDisplay, "mdi:format-title", [
+        { name: "name", label: t.name, selector: { text: {} } },
+        { name: "label", label: t.label, selector: { text: {} } },
+        { name: "unit", label: t.unitOpt, selector: { text: {} } },
+        { name: "decimals", label: t.decimals, selector: { number: { mode: "box", step: 1, min: 0, max: 3 } } },
+      ]),
+
+      group(t.secGauge, "mdi:cup-water", [
+        { name: "max_level", label: t.max, selector: { number: { mode: "box", step: "any", min: 0 } } },
+        { name: "glass_color", label: t.glassOpt, selector: { select: { mode: "dropdown", options: [
+          { value: "clear", label: t.glassClear },
+          { value: "bottle_green", label: t.glassGreen },
+          { value: "amber", label: t.glassAmber },
+          { value: "smoked", label: t.glassSmoked },
+        ] } } },
+        { name: "water_color", label: t.color, selector: { text: {} } },
+        { name: "show_bracket", label: t.bracket, selector: { boolean: {} } },
+      ]),
+
+      group(t.secChart, "mdi:chart-bar", [
+        { name: "show_history", label: t.histOpt, selector: { boolean: {} } },
+        ...(c.show_history === true ? [
+          { name: "history_expanded", label: t.histExpand, selector: { boolean: {} } },
+          { name: "history_bucket", label: t.bucketOpt, selector: { select: { mode: "dropdown", options: [
+            { value: "hour", label: t.bucketHour },
+            { value: "half_hour", label: t.bucketHalf },
+          ] } } },
+        ] : []),
+      ]),
+
+      group(t.secSecondary, "mdi:playlist-plus", [
+        { name: "secondary_entity", label: t.secondary,
+          selector: { entity: { ...RAIN, multiple: true } } },
+        // Only offered while a single entity is listed: with several, a shared
+        // name or unit would be wrong for all but one of them.
+        ...(nSec === 1 ? [
+          { name: "secondary_name", label: t.secName, selector: { text: {} } },
+          { name: "secondary_unit", label: t.secUnit, selector: { text: {} } },
+        ] : []),
+      ]),
+
+      group(t.secBattery, "mdi:battery-70", [
+        { name: "battery_type", label: t.battType, selector: { select: { mode: "dropdown", options: [
+          { value: "percent", label: t.battTypePct },
+          { value: "other", label: t.battTypeOther },
+        ] } } },
+        { name: "battery_entity", label: t.battOpt, selector: { entity: battOther
+          ? { filter: [{ domain: "sensor" }] }
+          : { filter: [{ domain: "sensor", device_class: "battery" }] } } },
+        ...(battOther ? [
+          { name: "battery_min", label: t.battMin, selector: { number: { mode: "box", step: "any" } } },
+          { name: "battery_max", label: t.battMax, selector: { number: { mode: "box", step: "any" } } },
+        ] : []),
+        { name: "battery_display", label: t.battDisp, selector: { select: { mode: "dropdown", options: [
+          { value: "both", label: t.battBoth },
+          { value: "icon", label: t.battIcon },
+          { value: "percent", label: t.battPct },
+        ] } } },
+        { name: "connectivity_entity", label: t.connOpt,
+          selector: { entity: { filter: [{ domain: "binary_sensor", device_class: "connectivity" }] } } },
+      ]),
+
+      group(t.secAdvanced, "mdi:cog-outline", [
+        { name: "language", label: t.language, selector: { select: { mode: "dropdown", options:
+          [{ value: "", label: t.auto }].concat(Object.keys(PV_LANGNAMES).map((l) => ({ value: l, label: PV_LANGNAMES[l] }))) } } },
+      ]),
     ];
     this._renderHelperBox(t);
   }

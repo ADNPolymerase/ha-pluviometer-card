@@ -31,8 +31,9 @@ bracket — and fills it with water as the rain falls. Works with any precipitat
 - **Battery in any format**: percentage by default, or switch `battery_type` to `other` for sensors that report something else, such as the cell voltage on an Ecowitt WH40. The reading is then shown with its own unit, and giving `battery_min` / `battery_max` turns it back into a proper level gauge.
 - **Gauge color**: clear, bottle green, amber or smoked glass (`glass_color`) — or any custom color in YAML.
 - Unit read from the entity (mm, in…), configurable decimals and water color.
-- Optional subtitle (e.g. "today") and secondary entity (e.g. rain rate mm/h), with its own display name and unit: show a sensor that reports mm as `mm/h` without touching the entity itself.
-- Native HA editor with entity pickers filtered to what makes sense (rain, battery, connectivity device classes) + full YAML control, which accepts any entity. Tap opens more-info.
+- **As many secondary entities as you like**, one line each under the value, for the extra rain sensors a station such as an Ecowitt exposes. A single one can carry its own display name and unit, so a sensor reporting mm shows as `mm/h` without touching the entity.
+- Optional subtitle, e.g. "today".
+- Native HA editor, grouped into collapsible panels, with entity pickers filtered to what makes sense (rain, battery, connectivity device classes). Full YAML control too, which accepts any entity. Tap opens more-info.
 
 ## Installation (HACS)
 
@@ -57,11 +58,24 @@ name: Rain gauge
 label: today
 max_level: 20            # daily maximum, in the entity's unit (default 40)
 show_history: true       # adds the 24 h chart button
+history_expanded: true   # and opens it straight away
 secondary_entity: sensor.rain_gauge_precipitation
 secondary_name: Rain rate
 secondary_unit: mm/h     # shown as mm/h without touching the entity
 battery_entity: sensor.rain_gauge_battery
 connectivity_entity: binary_sensor.rain_gauge_connectivity
+```
+
+Several secondary entities, one line each. Plain ids are enough; the object form
+adds a name and a unit per line, which the visual editor preserves but cannot set:
+
+```yaml
+secondary_entity:
+  - sensor.rain_event
+  - sensor.rain_weekly
+  - entity: sensor.rain_piezo_rate
+    name: Rain rate
+    unit: mm/h
 ```
 
 | Option | Default | Description |
@@ -76,10 +90,11 @@ connectivity_entity: binary_sensor.rain_gauge_connectivity
 | `glass_color` | `clear` | Gauge tint: `clear`, `bottle_green`, `amber`, `smoked` or a hex color |
 | `show_bracket` | `true` | Show the mounting bracket (semi-transparent) |
 | `show_history` | `false` | Adds the collapsible 24 h history button |
+| `history_expanded` | `false` | Open that chart by default, no click needed |
 | `history_bucket` | `hour` | 24 h chart bars: `hour` or `half_hour` |
-| `secondary_entity` | — | Extra sensor shown under the value |
-| `secondary_name` | friendly name | Display name for the secondary entity |
-| `secondary_unit` | entity unit | Displayed unit for the secondary entity |
+| `secondary_entity` | — | Extra sensor under the value. A list gives one line per entity |
+| `secondary_name` | friendly name | Display name, single secondary entity only |
+| `secondary_unit` | entity unit | Displayed unit, single secondary entity only |
 | `battery_entity` | — | Battery sensor shown top-right |
 | `battery_type` | `percent` | `percent`, or `other` for a sensor that is not a percentage |
 | `battery_min` | — | Value meaning empty, in the sensor's unit (`other` only) |

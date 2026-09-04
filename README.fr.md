@@ -23,8 +23,9 @@ capteur de précipitations (Netatmo, intégrations météo, DIY…), en mm ou en
 - **Batterie dans n'importe quel format** : pourcentage par défaut, ou `battery_type: other` pour les capteurs qui remontent autre chose, comme la tension de la pile sur un Ecowitt WH40. La valeur est alors affichée avec son unité, et renseigner `battery_min` / `battery_max` la retransforme en vraie jauge de niveau.
 - **Couleur du pluviomètre** : transparent, vert bouteille, ambré ou fumé (`glass_color`) — ou toute couleur libre en YAML.
 - Unité lue sur l'entité (mm, in…), décimales et couleur de l'eau configurables.
-- Sous-titre optionnel (ex. « aujourd'hui ») et entité secondaire (ex. intensité mm/h), avec son propre nom et sa propre unité d'affichage : montrer en `mm/h` un capteur qui remonte des mm, sans toucher à l'entité.
-- Éditeur natif HA avec des sélecteurs filtrés sur les entités pertinentes (device_class pluie, batterie, connectivité) + YAML complet, qui accepte n'importe quelle entité. Un tap ouvre le more-info.
+- **Autant d'entités secondaires que voulu**, une par ligne sous la valeur, pour les capteurs de pluie supplémentaires qu'expose une station comme une Ecowitt. Quand il n'y en a qu'une, elle peut porter son propre nom et sa propre unité : afficher en `mm/h` un capteur qui remonte des mm, sans toucher à l'entité.
+- Sous-titre optionnel, ex. « aujourd'hui ».
+- Éditeur natif HA rangé en panneaux dépliables, avec des sélecteurs filtrés sur les entités pertinentes (device_class pluie, batterie, connectivité). YAML complet également, qui accepte n'importe quelle entité. Un tap ouvre le more-info.
 
 ## Installation (HACS)
 
@@ -46,11 +47,25 @@ name: Pluviomètre
 label: aujourd'hui
 max_level: 20            # maximum par jour, dans l'unité de l'entité (défaut 40)
 show_history: true       # bouton du tracé 24 h
+history_expanded: true   # et ouvert d'emblée
 secondary_entity: sensor.pluviometre_precipitation
 secondary_name: Intensité
 secondary_unit: mm/h     # affiché en mm/h sans toucher à l'entité
 battery_entity: sensor.pluviometre_batterie
 connectivity_entity: binary_sensor.pluviometre_connectivite
+```
+
+Plusieurs entités secondaires, une par ligne. Les identifiants seuls suffisent ; la
+forme objet ajoute un nom et une unité par ligne, que l'éditeur graphique conserve
+mais ne sait pas saisir :
+
+```yaml
+secondary_entity:
+  - sensor.pluie_evenement
+  - sensor.pluie_semaine
+  - entity: sensor.pluie_intensite
+    name: Intensité
+    unit: mm/h
 ```
 
 | Option | Défaut | Description |
@@ -65,10 +80,11 @@ connectivity_entity: binary_sensor.pluviometre_connectivite
 | `glass_color` | `clear` | Teinte : `clear`, `bottle_green`, `amber`, `smoked` ou couleur hex |
 | `show_bracket` | `true` | Afficher le collier de fixation (semi-transparent) |
 | `show_history` | `false` | Ajoute le bouton du tracé 24 h dépliable |
+| `history_expanded` | `false` | Ouvre ce tracé par défaut, sans clic |
 | `history_bucket` | `hour` | Barres du tracé : `hour` ou `half_hour` |
-| `secondary_entity` | — | Capteur supplémentaire affiché sous la valeur |
-| `secondary_name` | friendly name | Nom affiché de l'entité secondaire |
-| `secondary_unit` | unité de l'entité | Unité affichée pour l'entité secondaire |
+| `secondary_entity` | — | Capteur sous la valeur. Une liste donne une ligne par entité |
+| `secondary_name` | friendly name | Nom affiché, uniquement si une seule entité secondaire |
+| `secondary_unit` | unité de l'entité | Unité affichée, uniquement si une seule entité secondaire |
 | `battery_entity` | — | Capteur batterie affiché en haut à droite |
 | `battery_type` | `percent` | `percent`, ou `other` si le capteur n'est pas un pourcentage |
 | `battery_min` | — | Valeur correspondant à vide, dans l'unité du capteur (`other`) |

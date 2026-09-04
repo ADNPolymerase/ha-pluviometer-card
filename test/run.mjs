@@ -19,7 +19,7 @@ process.env.TZ = 'UTC';
 
 import { fileURLToPath } from 'node:url';
 import { dirname, join, isAbsolute } from 'node:path';
-import { loadCard, freezeClock, check, contains, report } from './harness.mjs';
+import { loadCard, markup, freezeClock, check, contains, report } from './harness.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const TARGET = process.env.PLUVIO_CARD
@@ -111,6 +111,38 @@ function scaleOf(svg) {
     .map(m => parseFloat(norm(m[1])));
   return Math.max(...vals);
 }
+
+/**
+ * A real _build(), which the other helpers skip. The harness node has a bare
+ * style object, so lend it setProperty for the duration — the card sets its
+ * glass colours through CSS custom properties.
+ */
+function buildCard(config) {
+  const create = globalThis.document.createElement;
+  globalThis.document.createElement = tag => {
+    const n = create(tag);
+    n.style.setProperty = () => {};
+    return n;
+  };
+  try {
+    const c = new Card();
+    c.setConfig(config);
+    c._build();
+    return c;
+  } finally {
+    globalThis.document.createElement = create;
+  }
+}
+
+/** Secondary lines, read back out of the innerHTML the card writes. */
+const secLines = c => [...String(c._el['pv-secondary'].innerHTML)
+  .matchAll(/<div class="pv-sec-line">(.*?)<\/div>/g)].map(m => norm(m[1]));
+
+/** The editor groups its fields in expandable panels; tests want them flat. */
+const flatSchema = schema =>
+  schema.flatMap(f => (f.type === 'expandable' ? flatSchema(f.schema) : [f]));
+const fieldNames = ed => flatSchema(ed._form.schema).map(f => f.name);
+const field = (ed, n) => flatSchema(ed._form.schema).find(f => f.name === n);
 
 /** History points, offsets in hours from the window start. */
 const pts = pairs => pairs.map(([h, v]) => ({ t: WIN_START + h * HOUR, v }));
@@ -318,12 +350,12 @@ check('indisponible → pas de débordement résiduel',
       attributes: { friendly_name: 'Pluie heure', unit_of_measurement: 'mm' } } };
 
   check('secondaire : unité de l\'entité par défaut',
-    norm(makeCard({ secondary_entity: 'sensor.rate' }, states)._el['pv-secondary'].textContent),
+    secLines(makeCard({ secondary_entity: 'sensor.rate' }, states))[0],
     'Pluie heure : 3.2 mm');
 
   check('secondaire : unité forcée sans toucher à l\'entité',
-    norm(makeCard({ secondary_entity: 'sensor.rate', secondary_name: 'Intensité',
-      secondary_unit: 'mm/h' }, states)._el['pv-secondary'].textContent),
+    secLines(makeCard({ secondary_entity: 'sensor.rate', secondary_name: 'Intensité',
+      secondary_unit: 'mm/h' }, states))[0],
     'Intensité : 3.2 mm/h');
 
   check('secondaire absent → masqué', makeCard({}, states)._el['pv-secondary'].hidden, true);
@@ -402,31 +434,35 @@ function makeEditor(config) {
 
 {
   const { ed, fire } = makeEditor({ entity: RAIN });
-  fire({ entity: 'sensor.other', secondary_unit: 'mm/h', max_level: 20 });
+  fire({ entity: 'sensor.other', secondary_entity: ['sensor.rate'],
+    secondary_unit: 'mm/h', max_level: 20 });
   const ev = ed.events.at(-1);
   check('l\'éditeur émet config-changed', ev?.type, 'config-changed');
   check('config-changed porte un detail non nul', ev?.detail?.config != null, true);
   check('config-changed porte l\'entité éditée', ev?.detail?.config?.entity, 'sensor.other');
   check('config-changed porte les nouvelles options', ev?.detail?.config?.secondary_unit, 'mm/h');
+  check('une seule entité secondaire est stockée comme chaîne',
+    ev?.detail?.config?.secondary_entity, 'sensor.rate');
   check('config-changed conserve le type de carte',
     ev?.detail?.config?.type, 'custom:pluviometer-card');
 }
 
 {
   const { ed } = makeEditor({ entity: RAIN });
-  const names = ed._form.schema.map(f => f.name);
+  const names = fieldNames(ed);
   check('format batterie proposé dans l\'éditeur', names.includes('battery_type'), true);
   check('plage batterie cachée en mode pourcentage', names.includes('battery_min'), false);
-  check('unité secondaire proposée dans l\'éditeur', names.includes('secondary_unit'), true);
+  check('sans entité secondaire, pas de champ unité secondaire',
+    names.includes('secondary_unit'), false);
   check('unité principale proposée dans l\'éditeur', names.includes('unit'), true);
 }
 
 {
   const { ed } = makeEditor({ entity: RAIN, battery_type: 'other' });
-  const names = ed._form.schema.map(f => f.name);
+  const names = fieldNames(ed);
   check('plage batterie révélée en mode autre unité', names.includes('battery_min'), true);
   check('plage batterie : les deux bornes', names.includes('battery_max'), true);
-  const picker = ed._form.schema.find(f => f.name === 'battery_entity');
+  const picker = field(ed, 'battery_entity');
   check('mode autre unité : sélecteur ouvert à tous les capteurs',
     JSON.stringify(picker.selector.entity.filter), '[{"domain":"sensor"}]');
 }
@@ -476,6 +512,154 @@ function makeEditor(config) {
   const n = ed.events.length;
   fire({ entity: 'sensor.other' });
   check('écho identique : pas de nouvel événement', ed.events.length, n);
+}
+
+// ── Several secondary entities ───────────────────────────────────────────────
+// One line per entity. A shared name/unit is only meaningful for a single one.
+
+{
+  const states = { ...rainState(12.6),
+    'sensor.rate':  { state: '3.2',  attributes: { friendly_name: 'Rain rate', unit_of_measurement: 'mm/h' } },
+    'sensor.event': { state: '8.4',  attributes: { friendly_name: 'Rain event', unit_of_measurement: 'mm' } },
+    'sensor.week':  { state: '21.7', attributes: { friendly_name: 'This week', unit_of_measurement: 'mm' } } };
+
+  const three = secLines(makeCard(
+    { secondary_entity: ['sensor.rate', 'sensor.event', 'sensor.week'] }, states));
+  check('trois entités secondaires → trois lignes', three.length, 3);
+  check('ligne 1', three[0], 'Rain rate : 3.2 mm/h');
+  check('ligne 2', three[1], 'Rain event : 8.4 mm');
+  check('ligne 3', three[2], 'This week : 21.7 mm');
+
+  check('l\'ordre de la liste est respecté',
+    secLines(makeCard({ secondary_entity: ['sensor.week', 'sensor.rate'] }, states))[0],
+    'This week : 21.7 mm');
+
+  check('liste d\'un seul élément : nom et unité partagés s\'appliquent encore',
+    secLines(makeCard({ secondary_entity: ['sensor.rate'], secondary_name: 'Intensité',
+      secondary_unit: 'mm/h' }, states))[0], 'Intensité : 3.2 mm/h');
+
+  check('plusieurs entités : le nom partagé ne s\'applique à aucune',
+    secLines(makeCard({ secondary_entity: ['sensor.rate', 'sensor.event'],
+      secondary_name: 'Intensité' }, states))[0], 'Rain rate : 3.2 mm/h');
+
+  const objs = secLines(makeCard({ secondary_entity: [
+    { entity: 'sensor.rate', name: 'Intensité', unit: 'mm/h' },
+    { entity: 'sensor.event', name: 'Averse' },
+  ] }, states));
+  check('forme objet : nom et unité par ligne', objs[0], 'Intensité : 3.2 mm/h');
+  check('forme objet : unité reprise de l\'entité si absente', objs[1], 'Averse : 8.4 mm');
+
+  check('entité secondaire inconnue → ligne omise, pas de ligne vide',
+    secLines(makeCard({ secondary_entity: ['sensor.rate', 'sensor.absente'] }, states)).length, 1);
+  check('toutes les secondaires inconnues → bloc masqué',
+    makeCard({ secondary_entity: ['sensor.absente'] }, states)._el['pv-secondary'].hidden, true);
+
+  // The lines go through innerHTML now, so a friendly name is attacker-adjacent
+  // data: it comes from the entity registry, not from the card.
+  const evil = makeCard({ secondary_entity: ['sensor.evil'] }, { ...states,
+    'sensor.evil': { state: '1', attributes: { friendly_name: '<img src=x onerror=alert(1)>' } } });
+  contains('nom d\'entité échappé', evil._el['pv-secondary'].innerHTML, '&lt;img src=x');
+  check('nom d\'entité : rien d\'injecté',
+    /<img/.test(evil._el['pv-secondary'].innerHTML), false);
+}
+
+// ── Chart open by default ────────────────────────────────────────────────────
+
+{
+  const open = buildCard({ entity: RAIN, show_history: true, history_expanded: true });
+  check('tracé ouvert par défaut : état interne', open._histOpen, true);
+  contains('tracé ouvert par défaut : panneau déplié', markup(open), 'class="pv-hist pv-open"');
+  contains('tracé ouvert par défaut : chevron retourné', markup(open), 'class="pv-hist-toggle pv-open"');
+
+  const shut = buildCard({ entity: RAIN, show_history: true });
+  check('sans l\'option, le tracé reste replié', shut._histOpen, false);
+  // Loosely matching /pv-open/ would hit the CSS rules in the <style> block.
+  check('sans l\'option, aucune classe pv-open posée',
+    /class="pv-hist(-toggle)? pv-open"/.test(markup(shut)), false);
+
+  const off = buildCard({ entity: RAIN, history_expanded: true });
+  check('history_expanded sans show_history ne déplie rien', off._histOpen, false);
+}
+
+{
+  // _update() asks for the chart on every state push once it is open, so the
+  // loader has to be re-entrant or a freshly opened chart floods the history API.
+  let calls = 0;
+  const inst = Object.create(Card.prototype);
+  inst.setConfig({ entity: RAIN, show_history: true });
+  inst._hass = { language: 'fr', states: rainState(0),
+    callApi: async () => { calls++; await new Promise(r => setTimeout(r, 10)); return [[]]; } };
+  inst._el = { 'pv-hist-body': stub() };
+  await Promise.all([inst._loadHist(), inst._loadHist(), inst._loadHist()]);
+  check('chargements concurrents → une seule requête', calls, 1);
+  check('horodaté même quand l\'historique est vide', typeof inst._histAt, 'number');
+}
+
+{
+  // A failed fetch must still stamp, otherwise an open chart retries forever.
+  const inst = Object.create(Card.prototype);
+  inst.setConfig({ entity: RAIN, show_history: true });
+  inst._hass = { language: 'fr', states: rainState(0),
+    callApi: async () => { throw new Error('boom'); } };
+  inst._el = { 'pv-hist-body': stub() };
+  await inst._loadHist();
+  check('horodaté même en échec, pour ne pas boucler', typeof inst._histAt, 'number');
+}
+
+// ── Editor: grouped, and fields that appear with their context ───────────────
+
+{
+  const { ed } = makeEditor({ entity: RAIN });
+  const titles = ed._form.schema.filter(f => f.type === 'expandable').map(f => f.title);
+  check('éditeur regroupé en panneaux dépliables', titles.length, 6);
+  check('le capteur principal reste hors des panneaux',
+    ed._form.schema[0].name, 'entity');
+  check('panneaux nommés dans la langue de la card', titles.includes('Jauge'), true);
+  check('tracé 24 h replié tant que show_history est off',
+    fieldNames(ed).includes('history_expanded'), false);
+}
+
+{
+  const { ed } = makeEditor({ entity: RAIN, show_history: true });
+  check('show_history révèle l\'option d\'ouverture par défaut',
+    fieldNames(ed).includes('history_expanded'), true);
+  check('show_history révèle le pas des barres',
+    fieldNames(ed).includes('history_bucket'), true);
+}
+
+{
+  const { ed } = makeEditor({ entity: RAIN, secondary_entity: 'sensor.rate' });
+  check('sélecteur secondaire en choix multiple',
+    field(ed, 'secondary_entity').selector.entity.multiple, true);
+  check('une seule secondaire : nom et unité proposés',
+    fieldNames(ed).includes('secondary_name') && fieldNames(ed).includes('secondary_unit'), true);
+  check('une chaîne est présentée comme liste au sélecteur',
+    JSON.stringify(ed._form.data.secondary_entity), '["sensor.rate"]');
+}
+
+{
+  const { ed } = makeEditor({ entity: RAIN, secondary_entity: ['sensor.rate', 'sensor.event'] });
+  check('plusieurs secondaires : plus de nom partagé',
+    fieldNames(ed).includes('secondary_name'), false);
+  check('plusieurs secondaires : plus d\'unité partagée',
+    fieldNames(ed).includes('secondary_unit'), false);
+}
+
+{
+  // Editing in the UI hands back plain ids; a per-line name written in YAML
+  // must survive that round trip rather than being silently dropped.
+  const { ed, fire } = makeEditor({ entity: RAIN, secondary_entity: [
+    { entity: 'sensor.rate', name: 'Intensité', unit: 'mm/h' },
+    { entity: 'sensor.event' },
+  ] });
+  fire({ entity: RAIN, secondary_entity: ['sensor.rate', 'sensor.event', 'sensor.week'] });
+  const list = ed.events.at(-1)?.detail?.config?.secondary_entity;
+  check('ajout d\'une entité : les trois sont conservées', list?.length, 3);
+  check('le nom par ligne survit à une édition dans l\'interface',
+    list?.[0]?.name, 'Intensité');
+  check('l\'unité par ligne survit aussi', list?.[0]?.unit, 'mm/h');
+  check('une entité sans métadonnée reste un simple identifiant',
+    typeof list?.[2], 'string');
 }
 
 report();
