@@ -18,6 +18,7 @@
 process.env.TZ = 'UTC';
 
 import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
 import { dirname, join, isAbsolute } from 'node:path';
 import { loadCard, markup, freezeClock, check, contains, report } from './harness.mjs';
 
@@ -416,7 +417,7 @@ check('sans entité de connectivité → coin masqué',
 // CustomEvent.detail is a readonly accessor: assigning it after construction
 // drops the payload silently and every edit made in the editor is lost.
 
-function makeEditor(config) {
+function makeEditor(config, lang = 'fr') {
   const ed = new Editor();
   const listeners = {};
   ed.insertBefore = node => ed.appendChild(node);   // absent from the harness node
@@ -427,7 +428,7 @@ function makeEditor(config) {
     return n;
   };
   ed.setConfig(config);
-  ed.hass = { language: 'fr', states: rainState(5) };
+  ed.hass = { language: lang, states: rainState(5) };
   globalThis.document.createElement = create;
   return { ed, fire: v => listeners['value-changed'].forEach(fn => fn({ detail: { value: v } })) };
 }
@@ -563,7 +564,7 @@ function makeEditor(config) {
     /<img/.test(evil._el['pv-secondary'].innerHTML), false);
 }
 
-// ── Chart open by default ────────────────────────────────────────────────────
+// ── Chart always visible ─────────────────────────────────────────────────────
 
 {
   const open = buildCard({ entity: RAIN, show_history: true, history_expanded: true });
@@ -623,7 +624,7 @@ function makeEditor(config) {
 {
   const { ed } = makeEditor({ entity: RAIN });
   const titles = ed._form.schema.filter(f => f.type === 'expandable').map(f => f.title);
-  check('éditeur regroupé en panneaux dépliables', titles.length, 6);
+  check('éditeur regroupé en panneaux dépliables', titles.length, 5);
   check('le capteur principal reste hors des panneaux',
     ed._form.schema[0].name, 'entity');
   check('panneaux nommés dans la langue de la card', titles.includes('Jauge'), true);
@@ -633,7 +634,7 @@ function makeEditor(config) {
 
 {
   const { ed } = makeEditor({ entity: RAIN, show_history: true });
-  check('show_history révèle l\'option d\'ouverture par défaut',
+  check('show_history révèle l\'option de tracé permanent',
     fieldNames(ed).includes('history_expanded'), true);
   check('show_history révèle le pas des barres',
     fieldNames(ed).includes('history_bucket'), true);
@@ -672,6 +673,111 @@ function makeEditor(config) {
   check('l\'unité par ligne survit aussi', list?.[0]?.unit, 'mm/h');
   check('une entité sans métadonnée reste un simple identifiant',
     typeof list?.[2], 'string');
+}
+
+// ── Languages ────────────────────────────────────────────────────────────────
+// Two separate tables decide the language. The dropdown lists PV_LANGNAMES,
+// while detection looks the code up in PV_T. A language in one and not the
+// other is either offered and then shown in English, or detected yet
+// impossible to pick by hand. A key missing from a language surfaces as the
+// word "undefined" in the editor, which nothing else would notice.
+
+/** Arrays compared as text: check() uses Object.is, and a failure then names the culprits. */
+const names = a => a.join(', ');
+
+function table(name) {
+  try {
+    const src = readFileSync(TARGET, 'utf8');
+    const start = src.indexOf(`const ${name} =`);
+    const end = src.indexOf('};', start) + 2;
+    return new Function(src.slice(start, end) + `; return ${name};`)();
+  } catch (e) { return null; }   // a mangled build must fail below, not crash here
+}
+
+{
+  const T = table('PV_T'), NAMES = table('PV_LANGNAMES');
+  check('table des traductions lisible', T != null && NAMES != null, true);
+  const langs = Object.keys(T || {}), named = Object.keys(NAMES || {});
+  const ref = Object.keys((T || {}).en || {});
+  check('chaque langue traduite est proposée dans le menu',
+    names(langs.filter(l => !named.includes(l))), '');
+  check('chaque langue du menu a ses traductions',
+    names(named.filter(l => !langs.includes(l))), '');
+  for (const l of langs) {
+    const keys = Object.keys(T[l]);
+    check(`${l} : aucune clé manquante`, names(ref.filter(k => !keys.includes(k))), '');
+    check(`${l} : aucune clé en trop`, names(keys.filter(k => !ref.includes(k))), '');
+    check(`${l} : aucune valeur vide`,
+      names(keys.filter(k => typeof T[l][k] !== 'string' || !T[l][k].trim())), '');
+  }
+  // Same set as ha-gate-card, so a user moving between the cards finds the same list.
+  check('13 langues, alignées sur les autres cards', names(named),
+    'en, fr, de, es, it, nl, pt, sv, no, da, pl, hu, ru');
+}
+
+{
+  // The path a user actually takes: pick it in the dropdown, or let HA decide.
+  const { ed } = makeEditor({ entity: RAIN }, 'hu');
+  const offered = field(ed, 'language')?.selector?.select?.options?.map(o => o.value) || [];
+  check('hongrois proposé dans le menu de l\'éditeur', offered.includes('hu'), true);
+  const titles = ed._form.schema.filter(f => f.type === 'expandable').map(f => f.title);
+  check('éditeur en hongrois quand Home Assistant l\'est', titles.includes('Mérőműszer'), true);
+  check('aucun libellé indéfini en hongrois',
+    names(flatSchema(ed._form.schema).filter(f => f.name && !f.label).map(f => f.name)), '');
+
+  const c = makeCard({ show_history: true },
+    { [RAIN]: { state: 'unavailable', attributes: { friendly_name: 'Pluviomètre' } } },
+    { language: 'hu' });
+  check('card détectée en hongrois depuis Home Assistant',
+    c._el['pv-label'].textContent, 'Nem érhető el');
+  check('tracé 24 h titré en hongrois', c._el['pv-hist-label'].textContent, 'Elmúlt 24 óra');
+
+  // HA sends regional codes for some languages (de-CH, es-419, en-GB); the card
+  // keeps the first two letters, or those users silently fall back to English.
+  const ch = makeCard({}, { [RAIN]: { state: 'unavailable', attributes: {} } },
+    { language: undefined, locale: { language: 'de-CH' } });
+  check('code régional ramené à sa langue (de-CH → de)',
+    ch._el['pv-label'].textContent, 'Nicht verfügbar');
+}
+
+{
+  // Choosing the card's language whatever HA speaks: a wall tablet shown to
+  // family who read another language, say.
+  const c = makeCard({ language: 'de' },
+    { [RAIN]: { state: 'unavailable', attributes: {} } }, { language: 'fr' });
+  check('langue choisie prioritaire sur celle de Home Assistant',
+    c._el['pv-label'].textContent, 'Nicht verfügbar');
+
+  // The editor stays in the editing person's language: picking Русский by
+  // mistake must not turn the very form you would fix it in into Russian.
+  const { ed, fire } = makeEditor({ entity: RAIN, language: 'ru' });
+  const titles = ed._form.schema.filter(f => f.type === 'expandable').map(f => f.title);
+  check('l\'éditeur reste dans la langue de Home Assistant', titles.includes('Jauge'), true);
+  check('libellé explicite du réglage', field(ed, 'language')?.label, 'Langue de la carte');
+  check('première option = suivre Home Assistant',
+    JSON.stringify(field(ed, 'language')?.selector?.select?.options?.[0]),
+    JSON.stringify({ value: '', label: 'Comme Home Assistant' }));
+
+  // It used to sit alone in a collapsed "Advanced" panel, where nobody found it.
+  const home = ed._form.schema.find(g => g.type === 'expandable'
+    && g.schema.some(f => f.name === 'language'));
+  check('réglage de langue rangé dans « Affichage »', home?.title, 'Affichage');
+
+  fire({ entity: RAIN, language: 'de' });
+  check('le choix de langue est bien enregistré',
+    ed.events.at(-1)?.detail?.config?.language, 'de');
+  fire({ entity: RAIN, language: '' });
+  check('« Comme Home Assistant » retire la clé',
+    'language' in (ed.events.at(-1)?.detail?.config || {}), false);
+}
+
+{
+  // HA never sends "no": Norwegian users are "nb" (bokmål) or "nn" (nynorsk).
+  for (const code of ['nb', 'nn']) {
+    const c = makeCard({}, { [RAIN]: { state: 'unavailable', attributes: {} } },
+      { language: code });
+    check(`norvégien servi pour ${code}`, c._el['pv-label'].textContent, 'Utilgjengelig');
+  }
 }
 
 report();

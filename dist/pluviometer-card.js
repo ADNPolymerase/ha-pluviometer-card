@@ -1,4 +1,4 @@
-const CARD_VERSION = "0.5.0";
+const CARD_VERSION = "0.6.0";
 
 console.info(
   "%c PLUVIOMETER-CARD %c v" + CARD_VERSION + " ",
@@ -6,11 +6,11 @@ console.info(
   "color:#1c6ea4;background:white;font-weight:700;"
 );
 
-const PV_LANGNAMES = { en: "English", fr: "Français", de: "Deutsch", es: "Español", it: "Italiano", nl: "Nederlands" };
+const PV_LANGNAMES = { en: "English", fr: "Français", de: "Deutsch", es: "Español", it: "Italiano", nl: "Nederlands", pt: "Português", sv: "Svenska", no: "Norsk", da: "Dansk", pl: "Polski", hu: "Magyar", ru: "Русский" };
 
 const PV_T = {
   en: { entity: "Rain sensor", name: "Name", label: "Subtitle", max: "Daily precipitation maximum (full gauge)", decimals: "Decimals",
-    color: "Water color (hex)", secondary: "Secondary entities (e.g. rain rate)", language: "Language", auto: "Auto",
+    color: "Water color (hex)", secondary: "Secondary entities (e.g. rain rate)", language: "Card language", auto: "Same as Home Assistant",
     unavailable: "Unavailable", bracket: "Show mounting bracket",
     notCumul: "This sensor does not look like a daily total.", createBtn: "Create the daily total sensor",
     creating: "Creating…", created: "Created and selected: ", createError: "Creation failed: ",
@@ -24,11 +24,11 @@ const PV_T = {
     battMin: "Battery empty at (same unit as the sensor)", battMax: "Battery full at",
     battType: "Battery format", battTypePct: "Percentage (standard)", battTypeOther: "Other unit (voltage…)",
     unitOpt: "Displayed unit (overrides the entity)", secUnit: "Secondary entity displayed unit",
-    histExpand: "Open the chart by default",
+    histExpand: "Keep the chart always visible",
     secDisplay: "Display", secGauge: "Gauge", secChart: "24 h chart",
-    secSecondary: "Secondary entities", secBattery: "Battery and connectivity", secAdvanced: "Advanced" },
+    secSecondary: "Secondary entities", secBattery: "Battery and connectivity" },
   fr: { entity: "Capteur de pluie", name: "Nom", label: "Sous-titre", max: "Maximum de précipitations par jour (jauge pleine)", decimals: "Décimales",
-    color: "Couleur de l'eau (hex)", secondary: "Entités secondaires (ex. intensité)", language: "Langue", auto: "Auto",
+    color: "Couleur de l'eau (hex)", secondary: "Entités secondaires (ex. intensité)", language: "Langue de la carte", auto: "Comme Home Assistant",
     unavailable: "Indisponible", bracket: "Afficher le collier de fixation",
     notCumul: "Ce capteur ne semble pas être un cumul journalier.", createBtn: "Créer le capteur de cumul journalier",
     creating: "Création…", created: "Créé et sélectionné : ", createError: "Échec de la création : ",
@@ -42,11 +42,11 @@ const PV_T = {
     battMin: "Batterie vide à (unité du capteur)", battMax: "Batterie pleine à",
     battType: "Format de la batterie", battTypePct: "Pourcentage (classique)", battTypeOther: "Autre unité (tension…)",
     unitOpt: "Unité affichée (remplace celle de l'entité)", secUnit: "Unité affichée de l'entité secondaire",
-    histExpand: "Ouvrir le tracé par défaut",
+    histExpand: "Garder le tracé toujours visible",
     secDisplay: "Affichage", secGauge: "Jauge", secChart: "Tracé 24 h",
-    secSecondary: "Entités secondaires", secBattery: "Batterie et connectivité", secAdvanced: "Avancé" },
+    secSecondary: "Entités secondaires", secBattery: "Batterie et connectivité" },
   de: { entity: "Regensensor", name: "Name", label: "Untertitel", max: "Tagesmaximum Niederschlag (volle Skala)", decimals: "Dezimalstellen",
-    color: "Wasserfarbe (Hex)", secondary: "Sekundäre Entitäten (z. B. Regenrate)", language: "Sprache", auto: "Auto",
+    color: "Wasserfarbe (Hex)", secondary: "Sekundäre Entitäten (z. B. Regenrate)", language: "Kartensprache", auto: "Wie Home Assistant",
     unavailable: "Nicht verfügbar", bracket: "Halterung anzeigen",
     notCumul: "Dieser Sensor scheint keine Tagessumme zu sein.", createBtn: "Tagessummen-Sensor erstellen",
     creating: "Wird erstellt…", created: "Erstellt und ausgewählt: ", createError: "Fehlgeschlagen: ",
@@ -60,11 +60,11 @@ const PV_T = {
     battMin: "Batterie leer bei (Einheit des Sensors)", battMax: "Batterie voll bei",
     battType: "Batterieformat", battTypePct: "Prozent (Standard)", battTypeOther: "Andere Einheit (Spannung…)",
     unitOpt: "Angezeigte Einheit (überschreibt die Entität)", secUnit: "Angezeigte Einheit der sekundären Entität",
-    histExpand: "Diagramm standardmäßig geöffnet",
+    histExpand: "Diagramm immer anzeigen",
     secDisplay: "Anzeige", secGauge: "Messgerät", secChart: "24-h-Diagramm",
-    secSecondary: "Sekundäre Entitäten", secBattery: "Batterie und Konnektivität", secAdvanced: "Erweitert" },
+    secSecondary: "Sekundäre Entitäten", secBattery: "Batterie und Konnektivität" },
   es: { entity: "Sensor de lluvia", name: "Nombre", label: "Subtítulo", max: "Máximo diario de precipitación (escala completa)", decimals: "Decimales",
-    color: "Color del agua (hex)", secondary: "Entidades secundarias (p. ej. intensidad)", language: "Idioma", auto: "Auto",
+    color: "Color del agua (hex)", secondary: "Entidades secundarias (p. ej. intensidad)", language: "Idioma de la tarjeta", auto: "Igual que Home Assistant",
     unavailable: "No disponible", bracket: "Mostrar el soporte",
     notCumul: "Este sensor no parece un total diario.", createBtn: "Crear el sensor de total diario",
     creating: "Creando…", created: "Creado y seleccionado: ", createError: "Error al crear: ",
@@ -78,11 +78,11 @@ const PV_T = {
     battMin: "Batería vacía a (unidad del sensor)", battMax: "Batería llena a",
     battType: "Formato de la batería", battTypePct: "Porcentaje (estándar)", battTypeOther: "Otra unidad (voltaje…)",
     unitOpt: "Unidad mostrada (reemplaza la de la entidad)", secUnit: "Unidad mostrada de la entidad secundaria",
-    histExpand: "Abrir el gráfico por defecto",
+    histExpand: "Mostrar siempre el gráfico",
     secDisplay: "Visualización", secGauge: "Medidor", secChart: "Gráfico 24 h",
-    secSecondary: "Entidades secundarias", secBattery: "Batería y conectividad", secAdvanced: "Avanzado" },
+    secSecondary: "Entidades secundarias", secBattery: "Batería y conectividad" },
   it: { entity: "Sensore pioggia", name: "Nome", label: "Sottotitolo", max: "Massimo giornaliero di pioggia (scala piena)", decimals: "Decimali",
-    color: "Colore dell'acqua (hex)", secondary: "Entità secondarie (es. intensità)", language: "Lingua", auto: "Auto",
+    color: "Colore dell'acqua (hex)", secondary: "Entità secondarie (es. intensità)", language: "Lingua della scheda", auto: "Come Home Assistant",
     unavailable: "Non disponibile", bracket: "Mostra la staffa",
     notCumul: "Questo sensore non sembra un totale giornaliero.", createBtn: "Crea il sensore del totale giornaliero",
     creating: "Creazione…", created: "Creato e selezionato: ", createError: "Creazione fallita: ",
@@ -96,11 +96,11 @@ const PV_T = {
     battMin: "Batteria scarica a (unità del sensore)", battMax: "Batteria carica a",
     battType: "Formato della batteria", battTypePct: "Percentuale (standard)", battTypeOther: "Altra unità (tensione…)",
     unitOpt: "Unità visualizzata (sostituisce quella dell'entità)", secUnit: "Unità visualizzata dell'entità secondaria",
-    histExpand: "Apri il grafico per impostazione predefinita",
+    histExpand: "Mostra sempre il grafico",
     secDisplay: "Visualizzazione", secGauge: "Misuratore", secChart: "Grafico 24 h",
-    secSecondary: "Entità secondarie", secBattery: "Batteria e connettività", secAdvanced: "Avanzate" },
+    secSecondary: "Entità secondarie", secBattery: "Batteria e connettività" },
   nl: { entity: "Regensensor", name: "Naam", label: "Ondertitel", max: "Dagelijks neerslagmaximum (volle schaal)", decimals: "Decimalen",
-    color: "Waterkleur (hex)", secondary: "Secundaire entiteiten (bijv. regenintensiteit)", language: "Taal", auto: "Auto",
+    color: "Waterkleur (hex)", secondary: "Secundaire entiteiten (bijv. regenintensiteit)", language: "Taal van de kaart", auto: "Zoals Home Assistant",
     unavailable: "Niet beschikbaar", bracket: "Beugel tonen",
     notCumul: "Deze sensor lijkt geen dagtotaal te zijn.", createBtn: "Dagtotaal-sensor aanmaken",
     creating: "Aanmaken…", created: "Aangemaakt en geselecteerd: ", createError: "Aanmaken mislukt: ",
@@ -114,9 +114,135 @@ const PV_T = {
     battMin: "Batterij leeg bij (eenheid van de sensor)", battMax: "Batterij vol bij",
     battType: "Batterijformaat", battTypePct: "Percentage (standaard)", battTypeOther: "Andere eenheid (spanning…)",
     unitOpt: "Weergegeven eenheid (overschrijft die van de entiteit)", secUnit: "Weergegeven eenheid secundaire entiteit",
-    histExpand: "Grafiek standaard geopend",
+    histExpand: "Grafiek altijd tonen",
     secDisplay: "Weergave", secGauge: "Meter", secChart: "24 u-grafiek",
-    secSecondary: "Secundaire entiteiten", secBattery: "Batterij en connectiviteit", secAdvanced: "Geavanceerd" },
+    secSecondary: "Secundaire entiteiten", secBattery: "Batterij en connectiviteit" },
+  pt: { entity: "Sensor de chuva", name: "Nome", label: "Subtítulo", max: "Precipitação máxima diária (medidor cheio)", decimals: "Casas decimais",
+    color: "Cor da água (hex)", secondary: "Entidades secundárias (ex. intensidade da chuva)", language: "Idioma do cartão", auto: "Igual ao Home Assistant",
+    unavailable: "Indisponível", bracket: "Mostrar o suporte de fixação",
+    notCumul: "Este sensor não parece ser um total diário.", createBtn: "Criar o sensor de total diário",
+    creating: "Em criação…", created: "Criado e selecionado: ", createError: "Falha na criação: ",
+    dailySuffix: "total diário", totalSuffix: "total",
+    hist: "Últimas 24 h", noData: "Sem dados", histOpt: "Mostrar o botão do histórico de 24 h",
+    bucketOpt: "Barras do gráfico de 24 h", bucketHour: "Por hora", bucketHalf: "Por meia hora",
+    glassOpt: "Cor do medidor", glassClear: "Transparente", glassGreen: "Verde garrafa", glassAmber: "Âmbar", glassSmoked: "Fumado",
+    secName: "Nome exibido da entidade secundária",
+    battOpt: "Entidade de bateria", battDisp: "Exibição da bateria", battIcon: "Ícone", battPct: "Percentagem", battBoth: "Ambos",
+    connOpt: "Entidade de conectividade",
+    battMin: "Bateria vazia a (mesma unidade do sensor)", battMax: "Bateria cheia a",
+    battType: "Formato da bateria", battTypePct: "Percentagem (padrão)", battTypeOther: "Outra unidade (tensão…)",
+    unitOpt: "Unidade exibida (substitui a da entidade)", secUnit: "Unidade exibida da entidade secundária",
+    histExpand: "Manter o gráfico sempre visível",
+    secDisplay: "Exibição", secGauge: "Medidor", secChart: "Gráfico de 24 h",
+    secSecondary: "Entidades secundárias", secBattery: "Bateria e conectividade" },
+  sv: { entity: "Regnsensor", name: "Namn", label: "Underrubrik", max: "Maximal nederbörd per dygn (full mätare)", decimals: "Decimaler",
+    color: "Vattenfärg (hex)", secondary: "Sekundära entiteter (t.ex. regnintensitet)", language: "Kortets språk", auto: "Samma som Home Assistant",
+    unavailable: "Otillgänglig", bracket: "Visa monteringsfästet",
+    notCumul: "Den här sensorn verkar inte vara en dygnssumma.", createBtn: "Skapa sensorn för dygnssumma",
+    creating: "Skapar…", created: "Skapad och vald: ", createError: "Det gick inte att skapa: ",
+    dailySuffix: "dygnssumma", totalSuffix: "totalt",
+    hist: "Senaste 24 h", noData: "Inga data", histOpt: "Visa knappen för 24 h-historik",
+    bucketOpt: "Staplar i 24 h-diagrammet", bucketHour: "Per timme", bucketHalf: "Per halvtimme",
+    glassOpt: "Regnmätarens färg", glassClear: "Genomskinlig", glassGreen: "Flaskgrön", glassAmber: "Bärnsten", glassSmoked: "Rökfärgad",
+    secName: "Visningsnamn för sekundär entitet",
+    battOpt: "Batterientitet", battDisp: "Batterivisning", battIcon: "Ikon", battPct: "Procent", battBoth: "Båda",
+    connOpt: "Anslutningsentitet",
+    battMin: "Batteriet tomt vid (samma enhet som sensorn)", battMax: "Batteriet fullt vid",
+    battType: "Batteriformat", battTypePct: "Procent (standard)", battTypeOther: "Annan enhet (spänning…)",
+    unitOpt: "Visad enhet (ersätter entitetens)", secUnit: "Visad enhet för sekundär entitet",
+    histExpand: "Visa alltid diagrammet",
+    secDisplay: "Visning", secGauge: "Mätare", secChart: "24 h-diagram",
+    secSecondary: "Sekundära entiteter", secBattery: "Batteri och anslutning" },
+  no: { entity: "Regnsensor", name: "Navn", label: "Undertittel", max: "Maksimal nedbør per døgn (full måler)", decimals: "Desimaler",
+    color: "Vannfarge (hex)", secondary: "Sekundære entiteter (f.eks. regnintensitet)", language: "Kortets språk", auto: "Samme som Home Assistant",
+    unavailable: "Utilgjengelig", bracket: "Vis monteringsbraketten",
+    notCumul: "Denne sensoren ser ikke ut til å være en døgnsum.", createBtn: "Opprett sensoren for døgnsum",
+    creating: "Oppretter…", created: "Opprettet og valgt: ", createError: "Kunne ikke opprette: ",
+    dailySuffix: "døgnsum", totalSuffix: "totalt",
+    hist: "Siste 24 t", noData: "Ingen data", histOpt: "Vis knappen for 24 t-historikk",
+    bucketOpt: "Stolper i 24 t-diagrammet", bucketHour: "Per time", bucketHalf: "Per halvtime",
+    glassOpt: "Farge på regnmåleren", glassClear: "Gjennomsiktig", glassGreen: "Flaskegrønn", glassAmber: "Rav", glassSmoked: "Røykfarget",
+    secName: "Visningsnavn for sekundær entitet",
+    battOpt: "Batterientitet", battDisp: "Batterivisning", battIcon: "Ikon", battPct: "Prosent", battBoth: "Begge",
+    connOpt: "Tilkoblingsentitet",
+    battMin: "Batteriet tomt ved (samme enhet som sensoren)", battMax: "Batteriet fullt ved",
+    battType: "Batteriformat", battTypePct: "Prosent (standard)", battTypeOther: "Annen enhet (spenning…)",
+    unitOpt: "Vist enhet (overstyrer entitetens)", secUnit: "Vist enhet for sekundær entitet",
+    histExpand: "Vis alltid diagrammet",
+    secDisplay: "Visning", secGauge: "Måler", secChart: "24 t-diagram",
+    secSecondary: "Sekundære entiteter", secBattery: "Batteri og tilkobling" },
+  da: { entity: "Regnsensor", name: "Navn", label: "Undertitel", max: "Maksimal nedbør pr. døgn (fuld måler)", decimals: "Decimaler",
+    color: "Vandfarve (hex)", secondary: "Sekundære entiteter (f.eks. regnintensitet)", language: "Kortets sprog", auto: "Samme som Home Assistant",
+    unavailable: "Utilgængelig", bracket: "Vis monteringsbeslaget",
+    notCumul: "Denne sensor ligner ikke en døgnsum.", createBtn: "Opret sensoren for døgnsum",
+    creating: "Opretter…", created: "Oprettet og valgt: ", createError: "Oprettelse mislykkedes: ",
+    dailySuffix: "døgnsum", totalSuffix: "i alt",
+    hist: "Seneste 24 t", noData: "Ingen data", histOpt: "Vis knappen for 24 t-historik",
+    bucketOpt: "Søjler i 24 t-diagrammet", bucketHour: "Pr. time", bucketHalf: "Pr. halve time",
+    glassOpt: "Regnmålerens farve", glassClear: "Gennemsigtig", glassGreen: "Flaskegrøn", glassAmber: "Rav", glassSmoked: "Røgfarvet",
+    secName: "Visningsnavn for sekundær entitet",
+    battOpt: "Batterientitet", battDisp: "Batterivisning", battIcon: "Ikon", battPct: "Procent", battBoth: "Begge",
+    connOpt: "Forbindelsesentitet",
+    battMin: "Batteri tomt ved (samme enhed som sensoren)", battMax: "Batteri fuldt ved",
+    battType: "Batteriformat", battTypePct: "Procent (standard)", battTypeOther: "Anden enhed (spænding…)",
+    unitOpt: "Vist enhed (tilsidesætter entitetens)", secUnit: "Vist enhed for sekundær entitet",
+    histExpand: "Vis altid diagrammet",
+    secDisplay: "Visning", secGauge: "Måler", secChart: "24 t-diagram",
+    secSecondary: "Sekundære entiteter", secBattery: "Batteri og forbindelse" },
+  pl: { entity: "Czujnik deszczu", name: "Nazwa", label: "Podtytuł", max: "Maksymalny opad dobowy (pełna skala)", decimals: "Miejsca dziesiętne",
+    color: "Kolor wody (hex)", secondary: "Encje dodatkowe (np. intensywność opadu)", language: "Język karty", auto: "Jak w Home Assistant",
+    unavailable: "Niedostępny", bracket: "Pokaż uchwyt montażowy",
+    notCumul: "Ten czujnik nie wygląda na sumę dobową.", createBtn: "Utwórz czujnik sumy dobowej",
+    creating: "Tworzenie…", created: "Utworzono i wybrano: ", createError: "Nie udało się utworzyć: ",
+    dailySuffix: "suma dobowa", totalSuffix: "suma",
+    hist: "Ostatnie 24 h", noData: "Brak danych", histOpt: "Pokaż przycisk historii 24 h",
+    bucketOpt: "Słupki wykresu 24 h", bucketHour: "Co godzinę", bucketHalf: "Co pół godziny",
+    glassOpt: "Kolor deszczomierza", glassClear: "Przezroczysty", glassGreen: "Butelkowa zieleń", glassAmber: "Bursztynowy", glassSmoked: "Przydymiony",
+    secName: "Wyświetlana nazwa encji dodatkowej",
+    battOpt: "Encja baterii", battDisp: "Wyświetlanie baterii", battIcon: "Ikona", battPct: "Procent", battBoth: "Oba",
+    connOpt: "Encja łączności",
+    battMin: "Bateria pusta przy (ta sama jednostka co czujnik)", battMax: "Bateria pełna przy",
+    battType: "Format baterii", battTypePct: "Procent (standard)", battTypeOther: "Inna jednostka (napięcie…)",
+    unitOpt: "Wyświetlana jednostka (zastępuje jednostkę encji)", secUnit: "Wyświetlana jednostka encji dodatkowej",
+    histExpand: "Zawsze pokazuj wykres",
+    secDisplay: "Wyświetlanie", secGauge: "Wskaźnik", secChart: "Wykres 24 h",
+    secSecondary: "Encje dodatkowe", secBattery: "Bateria i łączność" },
+  hu: { entity: "Esőszenzor", name: "Név", label: "Alcím", max: "Napi maximális csapadék (teli mérő)", decimals: "Tizedesjegyek",
+    color: "Víz színe (hex)", secondary: "Másodlagos entitások (pl. esőintenzitás)", language: "Kártya nyelve", auto: "Home Assistant szerint",
+    unavailable: "Nem érhető el", bracket: "Tartókonzol megjelenítése",
+    notCumul: "Ez a szenzor nem tűnik napi összegzőnek.", createBtn: "Napi összegző szenzor létrehozása",
+    creating: "Létrehozás…", created: "Létrehozva és kiválasztva: ", createError: "Létrehozás sikertelen: ",
+    dailySuffix: "napi összesen", totalSuffix: "összesen",
+    hist: "Elmúlt 24 óra", noData: "Nincs adat", histOpt: "24 órás történet gomb megjelenítése",
+    bucketOpt: "24 órás grafikon oszlopai", bucketHour: "Óránként", bucketHalf: "Félóránként",
+    glassOpt: "Csapadékmérő színe", glassClear: "Átlátszó", glassGreen: "Palackzöld", glassAmber: "Borostyán", glassSmoked: "Füstölt",
+    secName: "Másodlagos entitás megjelenített neve",
+    battOpt: "Akkumulátor entitás", battDisp: "Akkumulátor kijelzés", battIcon: "Ikon", battPct: "Százalék", battBoth: "Mindkettő",
+    connOpt: "Kapcsolat entitás",
+    battMin: "Akkumulátor lemerülve ennél: (szenzor mértékegysége)", battMax: "Akkumulátor feltöltve ennél:",
+    battType: "Akkumulátor formátuma", battTypePct: "Százalék (standard)", battTypeOther: "Egyéb mértékegység (feszültség…)",
+    unitOpt: "Megjelenített mértékegység (felülírja az entitásét)", secUnit: "Másodlagos entitás megjelenített mértékegysége",
+    histExpand: "Grafikon mindig látható",
+    secDisplay: "Megjelenítés", secGauge: "Mérőműszer", secChart: "24 órás grafikon",
+    secSecondary: "Másodlagos entitások", secBattery: "Akkumulátor és kapcsolat" },
+  ru: { entity: "Датчик осадков", name: "Название", label: "Подзаголовок", max: "Максимум осадков за сутки (полная шкала)", decimals: "Знаков после запятой",
+    color: "Цвет воды (hex)", secondary: "Дополнительные сущности (напр. интенсивность дождя)", language: "Язык карточки", auto: "Как в Home Assistant",
+    unavailable: "Недоступно", bracket: "Показывать крепление",
+    notCumul: "Этот датчик не похож на суточную сумму.", createBtn: "Создать датчик суточной суммы",
+    creating: "Создание…", created: "Создан и выбран: ", createError: "Не удалось создать: ",
+    dailySuffix: "за сутки", totalSuffix: "всего",
+    hist: "Последние 24 ч", noData: "Нет данных", histOpt: "Показывать кнопку истории за 24 ч",
+    bucketOpt: "Столбцы графика за 24 ч", bucketHour: "По часам", bucketHalf: "По получасам",
+    glassOpt: "Цвет дождемера", glassClear: "Прозрачный", glassGreen: "Бутылочно-зелёный", glassAmber: "Янтарный", glassSmoked: "Дымчатый",
+    secName: "Отображаемое имя дополнительной сущности",
+    battOpt: "Сущность батареи", battDisp: "Отображение батареи", battIcon: "Значок", battPct: "Проценты", battBoth: "Оба",
+    connOpt: "Сущность подключения",
+    battMin: "Батарея разряжена при (единица датчика)", battMax: "Батарея заряжена при",
+    battType: "Формат батареи", battTypePct: "Проценты (стандарт)", battTypeOther: "Другая единица (напряжение…)",
+    unitOpt: "Отображаемая единица (заменяет единицу сущности)", secUnit: "Отображаемая единица дополнительной сущности",
+    histExpand: "Всегда показывать график",
+    secDisplay: "Отображение", secGauge: "Шкала", secChart: "График за 24 ч",
+    secSecondary: "Дополнительные сущности", secBattery: "Батарея и подключение" },
 };
 
 function pvSlugify(s) {
@@ -126,7 +252,8 @@ function pvSlugify(s) {
 
 function pvLangCode(hass, config) {
   const l = (config && config.language) || (hass && (hass.locale ? hass.locale.language : hass.language)) || "en";
-  const s = String(l).substring(0, 2).toLowerCase();
+  let s = String(l).substring(0, 2).toLowerCase();
+  if (s === "nb" || s === "nn") s = "no";   // HA's Norwegian codes; the card's table is "no"
   return PV_T[s] ? s : "en";
 }
 function pvT(hass, config) { return PV_T[pvLangCode(hass, config)]; }
@@ -714,7 +841,7 @@ class PluviometerCardEditor extends HTMLElement {
   _render() {
     if (!this._hass || !this._config) return;
     const c = this._config;
-    const t = pvT(this._hass, c);
+    const t = pvT(this._hass);   // the person editing reads HA's language, whatever the card shows
     if (!this._form) {
       this.innerHTML = "";
       this._form = document.createElement("ha-form");
@@ -817,6 +944,8 @@ class PluviometerCardEditor extends HTMLElement {
 
       group(t.secDisplay, "mdi:format-title", [
         { name: "name", label: t.name, selector: { text: {} } },
+        { name: "language", label: t.language, selector: { select: { mode: "dropdown", options:
+          [{ value: "", label: t.auto }].concat(Object.keys(PV_LANGNAMES).map((l) => ({ value: l, label: PV_LANGNAMES[l] }))) } } },
         { name: "label", label: t.label, selector: { text: {} } },
         { name: "unit", label: t.unitOpt, selector: { text: {} } },
         { name: "decimals", label: t.decimals, selector: { number: { mode: "box", step: 1, min: 0, max: 3 } } },
@@ -876,11 +1005,6 @@ class PluviometerCardEditor extends HTMLElement {
         { name: "connectivity_entity", label: t.connOpt,
           selector: { entity: { filter: [{ domain: "binary_sensor", device_class: "connectivity" }] } } },
       ]),
-
-      group(t.secAdvanced, "mdi:cog-outline", [
-        { name: "language", label: t.language, selector: { select: { mode: "dropdown", options:
-          [{ value: "", label: t.auto }].concat(Object.keys(PV_LANGNAMES).map((l) => ({ value: l, label: PV_LANGNAMES[l] }))) } } },
-      ]),
     ];
     this._renderHelperBox(t);
   }
@@ -912,7 +1036,7 @@ class PluviometerCardEditor extends HTMLElement {
 
   async _createDaily() {
     const c = this._config;
-    const t = pvT(this._hass, c);
+    const t = pvT(this._hass);
     const st = this._hass.states[c.entity];
     const base = (st && st.attributes.friendly_name) || c.entity.split(".")[1];
     this._helperStatus = { busy: true, msg: t.creating };

@@ -91,7 +91,7 @@ secondary_entity:
 | `battery_max` | — | Valeur correspondant à plein, dans l'unité du capteur (`other`) |
 | `battery_display` | `both` | `icon`, `percent` ou `both` |
 | `connectivity_entity` | — | Capteur de connectivité affiché en haut à gauche |
-| `language` | auto | `en`, `fr`, `de`, `es`, `it`, `nl` |
+| `language` | comme HA | Langue de la carte, indépendante de celle de Home Assistant : `en`, `fr`, `de`, `es`, `it`, `nl`, `pt`, `sv`, `no`, `da`, `pl`, `hu`, `ru` |
 
 ## Licence
 

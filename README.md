@@ -10,7 +10,7 @@
 <a href="https://buymeacoffee.com/adnpolymerase" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-orange.png" alt="Buy Me A Coffee" height="60"></a>
 <a href="https://adnpolymerase.github.io/HA/" target="_blank"><img src="https://raw.githubusercontent.com/ADNPolymerase/HA/main/assets/site-button.svg" alt="Link to my github.io for my other projects" height="60"></a>
 
-Multilingual (6 languages: EN, FR, DE, ES, IT, NL — auto-detected from Home Assistant).
+Multilingual (13 languages: EN, FR, DE, ES, IT, NL, PT, SV, NO, DA, PL, HU, RU), detected from Home Assistant or chosen per card.
 
 A Lovelace card that draws a **real garden rain gauge** — funnel, graduated tube and mounting
 bracket — and fills it with water as the rain falls. Works with any precipitation sensor
@@ -101,7 +101,7 @@ secondary_entity:
 | `battery_max` | — | Value meaning full, in the sensor's unit (`other` only) |
 | `battery_display` | `both` | `icon`, `percent` or `both` |
 | `connectivity_entity` | — | Connectivity sensor shown top-left |
-| `language` | auto | `en`, `fr`, `de`, `es`, `it`, `nl` |
+| `language` | same as HA | Card language, whatever Home Assistant uses: `en`, `fr`, `de`, `es`, `it`, `nl`, `pt`, `sv`, `no`, `da`, `pl`, `hu`, `ru` |
 
 ## License
 
