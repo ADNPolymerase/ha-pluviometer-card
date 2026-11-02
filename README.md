@@ -1,5 +1,7 @@
 # Pluviometer Card
 
+<a href="https://github.com/ADNPolymerase/ha-pluviometer-card/blob/main/README.fr.md"><img src="https://raw.githubusercontent.com/ADNPolymerase/ha-pluviometer-card/main/docs/lang-fr.svg" alt="Lire en français" height="60"></a>
+
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-blue.svg)](https://github.com/hacs/default)
 [![GitHub Release](https://img.shields.io/github/v/release/ADNPolymerase/ha-pluviometer-card?sort=semver)](https://github.com/ADNPolymerase/ha-pluviometer-card/releases)
 [![HACS Action](https://github.com/ADNPolymerase/ha-pluviometer-card/actions/workflows/hacs.yml/badge.svg)](https://github.com/ADNPolymerase/ha-pluviometer-card/actions/workflows/hacs.yml)
@@ -15,8 +17,6 @@ Multilingual (13 languages: EN, FR, DE, ES, IT, NL, PT, SV, NO, DA, PL, HU, RU),
 A Lovelace card that draws a **real garden rain gauge** — funnel, graduated tube and mounting
 bracket — and fills it with water as the rain falls. Works with any precipitation sensor
 (Netatmo, weather integrations, DIY…), in mm or inches.
-
-> 🇫🇷 [Lire en français](README.fr.md)
 
 ![Pluviometer Card](https://raw.githubusercontent.com/ADNPolymerase/ha-pluviometer-card/main/docs/screenshot.png)
 

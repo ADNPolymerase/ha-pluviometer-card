@@ -1,10 +1,10 @@
 # Pluviometer Card
 
+<a href="https://github.com/ADNPolymerase/ha-pluviometer-card/blob/main/README.md"><img src="https://raw.githubusercontent.com/ADNPolymerase/ha-pluviometer-card/main/docs/lang-en.svg" alt="Read in English" height="60"></a>
+
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-blue.svg)](https://github.com/hacs/default)
 [![GitHub Release](https://img.shields.io/github/v/release/ADNPolymerase/ha-pluviometer-card?sort=semver)](https://github.com/ADNPolymerase/ha-pluviometer-card/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/ADNPolymerase/ha-pluviometer-card/blob/main/LICENSE)
-
-> 🇬🇧 [Read in English](README.md)
 
 Une card Lovelace qui dessine un **vrai pluviomètre de jardin** — entonnoir, tube gradué et
 collier de fixation — et le remplit d'eau au fil de la pluie. Fonctionne avec n'importe quel
