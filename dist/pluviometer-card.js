@@ -1,4 +1,4 @@
-const CARD_VERSION = "0.6.0";
+const CARD_VERSION = "0.6.1";
 
 console.info(
   "%c PLUVIOMETER-CARD %c v" + CARD_VERSION + " ",
